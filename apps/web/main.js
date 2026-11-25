@@ -7,7 +7,8 @@ ROOT.innerHTML = `<header><a class="brand" href="#top"><span class="mark">M</spa
 <section class="metrics" id="status"><div><span class="sectionLabel">LIVE NETWORK DATA</span><p>Not yet available</p><small>MANDAVEX deployment and indexed activity are not live. We publish no invented adoption or transaction statistics.</small></div><div><span class="sectionLabel">PRODUCT STATUS</span><p>Runtime-tested prototype</p><small>Fork checks the production registry: a non-holder is rejected, and an observed holder passes identity checks. No holder-signed action has run. The Guard is not deployed or audited.</small></div><div><span class="sectionLabel">COMPETITION WINDOW</span><p>Closes 09 Dec 2026 · 08:00 UTC</p><small>Eligibility requires a live product and at least 30 distinct Agent ID addresses interacting with submitted contracts during the official period.</small></div></section>
 <footer><span>MANDAVEX <b>·</b> BUILD FIRST. PROVE EVERYTHING.</span><span>Experimental software · No user assets held · Not audited</span><span>Preview build <code id="build-id">development</code></span></footer>`;
 
-fetch(new URL('build-info.json', import.meta.url)).then((response) => {
+const buildVersion = new URL(import.meta.url).searchParams.get('v') || 'local';
+fetch(`build-info.json?v=${encodeURIComponent(buildVersion)}`).then((response) => {
   if (!response.ok) throw new Error('Build metadata unavailable');
   return response.json();
 }).then((build) => {
