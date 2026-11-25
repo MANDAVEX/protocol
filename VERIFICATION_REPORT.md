@@ -1,6 +1,6 @@
 # VERIFICATION_REPORT
 
-Updated 2026-11-25.
+Updated 2026-11-26.
 
 ## VERIFIED
 - Official Binance hackathon announcement states the Agent ID contract address, `balanceOf` eligibility rule, submission window, eligibility and scoring.
@@ -8,7 +8,7 @@ Updated 2026-11-25.
 - Direct BSC RPC: Agent ID address has 8,756 bytes runtime code at time of read; supports ERC-721 and ERC-721 Metadata, not ERC-721 Enumerable. EIP-1967 implementation storage slot was zero; this does not exclude non-EIP-1967 upgrade patterns.
 - RPC observations and limitations recorded in `evidence/agent-id-bsc-rpc-check.json` at block 135734359.
 - Workspace inspection: empty directory, no existing git repository; Node and npm available; Foundry not available.
-- Existing public GitHub repository inspected: `MANDAVEX/protocol`, one existing commit containing the Apache-2.0 license. Remote fetched locally, no changes pushed. GitHub CLI and local Git author identity are not configured.
+- Reviewed prototype pushed to public `MANDAVEX/protocol` on `main` at commit `2158f9ab45f080b2055e2559d1b1e9bfd1fba8d3`; `git ls-remote` confirmed the exact remote ref.
 - `npm test`: 17 pass, 0 fail, including local EVM lifecycle/adversarial checks and a BSC mainnet-state fork check. Exact run output is preserved in `evidence/runtime-test-report.txt`; fork block and its narrow non-holder finding are recorded there.
 - `npm run compile:contracts`: succeeds with solc 0.8.39, optimizer 200, Paris EVM.
 - `npm audit`: 0 vulnerabilities in the recorded dependency audit.

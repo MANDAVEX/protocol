@@ -6,7 +6,9 @@ Identity is not authority. Autonomy is not permission.
 
 MANDAVEX is an open protocol for verifiable, scoped authorization of agent actions. The project is at an early implementation stage; this repository documents verified facts separately from plans.
 
-Existing public repository: [github.com/MANDAVEX/protocol](https://github.com/MANDAVEX/protocol). Local changes are not published yet.
+The reviewed prototype is published at [github.com/MANDAVEX/protocol](https://github.com/MANDAVEX/protocol) (commit `2158f9ab45f080b2055e2559d1b1e9bfd1fba8d3`).
+
+The MANDAVEX GitHub Pages workflow is prepared but not yet enabled or published. If approved, the static wallet and identity-check preview will be served at `https://mandavex.github.io/protocol/`. It is not the complete Guard workflow and does not submit transactions.
 
 ## Current status
 

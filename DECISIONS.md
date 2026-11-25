@@ -11,3 +11,6 @@ No deployer credentials, budget approval, contract review or deployment evidence
 
 ## 2026-11-25 — Reuse the existing public repository and Apache license
 The MANDAVEX GitHub organization has a public `protocol` repository on `main` with one existing Apache-2.0 license commit. The local workspace was empty. The remote is configured locally and fetched; code has not been pushed, and account ownership/write access has not been verified. Use the existing Apache-2.0 license rather than creating conflicting licensing.
+
+## 2026-11-26 — Publish the reviewed prototype and add CI
+The owner-controlled public repository was verified in the signed-in GitHub session. After lifecycle/fork tests, Slither review, dependency audit, and a credential-pattern scan, publish commit `2158f9ab45f080b2055e2559d1b1e9bfd1fba8d3`. CI runs EVM/fork tests, compilation, dependency audit, and a JavaScript syntax check. A GitHub Pages workflow is prepared separately and remains unpublished pending permission confirmation.
