@@ -14,7 +14,7 @@ Updated 2026-11-26.
 - `npm audit`: 0 vulnerabilities in the recorded dependency audit.
 - Read-only BSC mainnet RPC estimated 877,599 deployment gas and 0.0000526559 BNB using a sampled 0.05 gwei price at block 135741871, with 20% gas-limit headroom. The unsigned preparation script sent nothing; the estimate is not guaranteed. See `evidence/bsc-mainnet-deployment-estimate.json`.
 - Slither 0.11.6 analyzed one contract with 102 detectors and found 3 observations documented in `evidence/slither-report.txt`. They concern timestamps, assembly, and the deliberate low-level registry static call; this is static analysis, not an audit.
-- GitHub Actions CI and static Pages deployment both succeeded on commit `047afa7fb74cb137e105bb32f716db9fb95eafa5`. The public page, JavaScript and stylesheet returned HTTP 200; an independent browser loaded the preview. See `evidence/github-pages-deployment.json`.
+- GitHub Actions CI and static Pages deployment both succeeded on commit `04203b0cb341cd191d98e2f9c4b7132f8145f17c`. Pages succeeded on run attempt 2 after a transient artifact metadata lookup failure. The public page, JavaScript and stylesheet returned HTTP 200; an independent browser loaded the preview. See `evidence/github-pages-deployment.json` and [Pages workflow](https://github.com/MANDAVEX/protocol/actions/runs/45720949107).
 - Clean dependency install `npm ci --no-audit --no-fund` completed; tests passed afterward.
 - Public static preview is available at `https://mandavex.github.io/protocol/`. It performs no transaction and is not the deployed protocol.
 
@@ -28,3 +28,4 @@ Updated 2026-11-26.
 - Agent ID verified ABI/source and full upgrade/lifecycle analysis, complete application workflow, Guard deployment, independent audit, holder-positive path, Genesis, live adoption, video, submission.
 
 No production contract transaction or deployment result is claimed. The public website is a static preview only.
+

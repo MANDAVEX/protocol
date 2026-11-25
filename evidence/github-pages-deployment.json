@@ -1,10 +1,10 @@
 {
   "status": "VERIFIED",
   "date": "2026-11-26",
-  "commit": "047afa7fb74cb137e105bb32f716db9fb95eafa5",
-  "workflowRun": "https://github.com/MANDAVEX/protocol/actions/runs/45719387153",
-  "workflowConclusion": "success",
-  "buildWorkflowRun": "https://github.com/MANDAVEX/protocol/actions/runs/45719387201",
+  "commit": "04203b0cb341cd191d98e2f9c4b7132f8145f17c",
+  "workflowRun": "https://github.com/MANDAVEX/protocol/actions/runs/45720949107",
+  "workflowConclusion": "success (run attempt 2 after transient artifact metadata failure)",
+  "buildWorkflowRun": "https://github.com/MANDAVEX/protocol/actions/runs/45720949012",
   "buildConclusion": "success",
   "url": "https://mandavex.github.io/protocol/",
   "checks": {
