@@ -9,12 +9,12 @@ Updated 2026-11-26.
 - RPC observations and limitations recorded in `evidence/agent-id-bsc-rpc-check.json` at block 135734359.
 - Workspace inspection: empty directory, no existing git repository; Node and npm available; Foundry not available.
 - Reviewed prototype, CI and static preview are published in public `MANDAVEX/protocol` on `main`; this report records their evidence and limitations.
-- `npm test`: 17 pass, 0 fail, including local EVM lifecycle/adversarial checks and a BSC mainnet-state fork check. Exact run output is preserved in `evidence/runtime-test-report.txt`; fork block and its narrow non-holder finding are recorded there.
+- `npm test`: 18 pass, 0 fail, including a fork probe where an observed real Agent ID holder passes both identity checks before the intentionally empty signature is rejected, including local EVM lifecycle/adversarial checks and a BSC mainnet-state fork check. Exact run output is preserved in `evidence/runtime-test-report.txt`; fork block and its narrow non-holder finding are recorded there.
 - `npm run compile:contracts`: succeeds with solc 0.8.39, optimizer 200, Paris EVM.
 - `npm audit`: 0 vulnerabilities in the recorded dependency audit.
 - Read-only BSC mainnet RPC estimated 877,599 deployment gas and 0.0000526559 BNB using a sampled 0.05 gwei price at block 135741871, with 20% gas-limit headroom. The unsigned preparation script sent nothing; the estimate is not guaranteed. See `evidence/bsc-mainnet-deployment-estimate.json`.
 - Slither 0.11.6 analyzed one contract with 102 detectors and found 3 observations documented in `evidence/slither-report.txt`. They concern timestamps, assembly, and the deliberate low-level registry static call; this is static analysis, not an audit.
-- GitHub Actions CI and static Pages deployment both succeeded on commit `04203b0cb341cd191d98e2f9c4b7132f8145f17c`. Pages succeeded on run attempt 2 after a transient artifact metadata lookup failure. The public page, JavaScript and stylesheet returned HTTP 200; an independent browser loaded the preview. See `evidence/github-pages-deployment.json` and [Pages workflow](https://github.com/MANDAVEX/protocol/actions/runs/45720949107).
+- GitHub Actions CI and static Pages deployment both succeeded on commit `465c3884bb9881dea28a33c19807c527a4dc390c`. The public page, JavaScript and stylesheet returned HTTP 200, and an independent browser confirmed the visible build identifier matched that exact commit. The artifact metadata race was fixed by separating build/upload and deploy into dependent jobs. See `evidence/github-pages-deployment.json`, `evidence/pages-artifact-investigation.md`, [Pages workflow](https://github.com/MANDAVEX/protocol/actions/runs/45723672081) and [CI run](https://github.com/MANDAVEX/protocol/actions/runs/45723672142).
 - Clean dependency install `npm ci --no-audit --no-fund` completed; tests passed afterward.
 - Public static preview is available at `https://mandavex.github.io/protocol/`. It performs no transaction and is not the deployed protocol.
 
@@ -28,4 +28,3 @@ Updated 2026-11-26.
 - Agent ID verified ABI/source and full upgrade/lifecycle analysis, complete application workflow, Guard deployment, independent audit, holder-positive path, Genesis, live adoption, video, submission.
 
 No production contract transaction or deployment result is claimed. The public website is a static preview only.
-

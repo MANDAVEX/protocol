@@ -16,5 +16,5 @@
 - The holder-positive fork probe has no valid holder EIP-712 signature. Successful guarded execution and official wallet integration remain unverified.
 - Binance's documented external signing flow requires the holder to enable Developer Mode, inspect message/call previews and confirm any required app prompts. No `baw` CLI or connected Agentic Wallet session is present in this environment.
 - The contract remains experimental and undeployed. Mainnet launch requires independent security review and an authorized human to approve deployment costs/transaction.
-- Latest Pages failure was traced to an artifact lookup race: upload succeeded and the artifact was visible, while deploy found none. A standard two-job upload/deploy workflow fix has been prepared; confirm a new run on the next pushed commit.
+- Latest Pages failure was traced to an artifact lookup race: upload succeeded and the artifact was visible, while deploy found none. The two-job upload/deploy fix succeeded on commit `465c3884bb9881dea28a33c19807c527a4dc390c`; see `evidence/pages-artifact-investigation.md`.
 - No Genesis credentials, public adoption index, verified qualifying participants, interactive Arena or competition submission exist.

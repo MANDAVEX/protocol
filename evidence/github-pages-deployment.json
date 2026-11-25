@@ -1,10 +1,10 @@
 {
   "status": "VERIFIED",
   "date": "2026-11-26",
-  "commit": "04203b0cb341cd191d98e2f9c4b7132f8145f17c",
-  "workflowRun": "https://github.com/MANDAVEX/protocol/actions/runs/45720949107",
-  "workflowConclusion": "success (run attempt 2 after transient artifact metadata failure)",
-  "buildWorkflowRun": "https://github.com/MANDAVEX/protocol/actions/runs/45720949012",
+  "commit": "465c3884bb9881dea28a33c19807c527a4dc390c",
+  "workflowRun": "https://github.com/MANDAVEX/protocol/actions/runs/45723672081",
+  "workflowConclusion": "success",
+  "buildWorkflowRun": "https://github.com/MANDAVEX/protocol/actions/runs/45723672142",
   "buildConclusion": "success",
   "url": "https://mandavex.github.io/protocol/",
   "checks": {
@@ -12,7 +12,10 @@
     "pageHttpStatus": 200,
     "javascriptHttpStatus": 200,
     "stylesheetHttpStatus": 200,
-    "prototypeStatusTextPresent": true
+    "prototypeStatusTextPresent": true,
+    "publishedBuildCommit": "465c3884bb9881dea28a33c19807c527a4dc390c",
+    "publishedBuildTime": "2026-11-25T23:44:47Z",
+    "mobileBreakpointCss": "Present at max-width 700px; mobile viewport not visually inspected"
   },
   "limitations": [
     "This is the public static preview and connected-address identity read only.",
