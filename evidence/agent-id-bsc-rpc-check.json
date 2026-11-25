@@ -1,0 +1,18 @@
+{
+  "checkedAt": "2026-11-25",
+  "network": "BNB Smart Chain mainnet",
+  "chainId": 56,
+  "rpcMethod": "public JSON-RPC eth_call / eth_getCode / eth_getStorageAt",
+  "blockNumber": 135734359,
+  "registry": "0x60b9262456de011f7d15a54cdd8c48baaa8b022f",
+  "runtimeCodeBytes": 8756,
+  "runtimeCodeKeccak256": "0xc4006e6e6ffaaf6996116617392beabe4f5f0a0795841322f91c2ceac34d6ace",
+  "supportsInterface": {
+    "ERC721_0x80ac58cd": true,
+    "ERC721Metadata_0x5b5e139f": true,
+    "ERC721Enumerable_0x780e9d63": false
+  },
+  "eip1967ImplementationSlot": "0x0000000000000000000000000000000000000000000000000000000000000000",
+  "limitations": "This establishes code presence and interface responses at the recorded read. A zero EIP-1967 slot does not rule out every proxy pattern. Verified source/complete ABI, upgradeability, lifecycle, transfer behavior, and real holder flow still require review.",
+  "officialReference": "https://www.binance.com/en/support/announcement/detail/95f5dbe0ea674a48a739b59e046648bf"
+}

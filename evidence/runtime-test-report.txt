@@ -1,0 +1,36 @@
+MANDAVEX Phase II evidence
+Command: npm test
+Run date: 2026-11-25 (client local time Africa/Algiers; UTC recorded separately in conversation)
+Network: local Hardhat EVM plus BNB Smart Chain mainnet-state fork
+Limitations: fork loaded production registry state but tested only a generated non-holder. Deterministic local identities are not production identities. This is not mainnet deployment evidence.
+
+
+> mandavex-protocol@0.1.0 test
+> node --test
+
+{"network":"BSC mainnet state fork","forkBlock":135738724,"registry":"0x60b9262456de011f7d15a54cdd8c48baaa8b022f","constructorArgument":"0x60b9262456de011f7d15a54cdd8c48baaa8b022f","deploymentGasUsed":"869531","guardRuntimeCodeBytes":3758,"registryCodeBytes":8756,"result":"non-holder rejected at execution boundary"}
+✔ production Agent ID registry is loaded from a block-pinned BSC fork and rejects local non-holder (7106.4207ms)
+✔ valid EIP-712 mandate executes, consumes bounded use, emits proof, and revokes (1541.0838ms)
+✔ unknown Agent ID executor fails closed and leaves state unchanged (453.1481ms)
+✔ issuer Agent ID is rechecked at execution, not trusted from mandate creation (771.3357ms)
+✔ wrong caller, altered payload, altered action, and wrong issuer signature are rejected (539.8152ms)
+✔ expired mandate is rejected at the execution boundary (519.1478ms)
+✔ future mandate, malformed signature, and cross-contract typed-data replay are rejected (817.2707ms)
+✔ mandate maximum uses are enforced while the same mandate remains bound to one nonce (890.5869ms)
+✔ issuer nonce cannot be rebound to a different mandate (806.8459ms)
+✔ seeded payload fuzz rejects malformed requests without changing invariants (4987.0287ms)
+✔ deployment rejects a registry address without contract code (91.7096ms)
+✔ contract compiles to non-empty deployable bytecode (0.8917ms)
+✔ ABI exposes the intended execution and revocation surface (0.3478ms)
+✔ source uses execution-time fail-closed identity reads and a narrow deterministic action (0.281ms)
+✔ source includes chain and contract domain binding, expiry, revocation and bounded uses (0.2559ms)
+✔ SDK publishes official BSC identity and the exact demo action hash (0.8916ms)
+✔ SDK builds a chain- and contract-bound typed mandate (0.2969ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 13825.3673

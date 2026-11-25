@@ -1,0 +1,27 @@
+MANDAVEX Phase II static analysis evidence
+Command: .\.venv-audit\Scripts\slither.exe contracts/src/MandavexGuard.sol --solc '.\.venv-audit\Scripts\solc.exe'
+Tool: Slither 0.11.6
+Run date: 2026-11-25 (Africa/Algiers)
+Scope: contracts/src/MandavexGuard.sol only
+Limitations: Static analysis only; three expected-mechanism observations are not a security audit or proof of safety.
+
+Multiple frameworks detected: solc, Solc-json. Using solc (highest priority). Use --compile-force-framework to override.
+'.\.venv-audit\Scripts\solc.exe --version' running
+'.\.venv-audit\Scripts\solc.exe contracts/src/MandavexGuard.sol --combined-json abi,ast,bin,bin-runtime,srcmap,srcmap-runtime,userdoc,devdoc,hashes --allow-paths .,C:\Users\mmawe\OneDrive\Desktop\MANDAVEX\contracts\src' running
+INFO:Detectors:
+Detector: timestamp
+MandavexGuard.execute(MandavexGuard.Mandate,bytes,bytes) (contracts/src/MandavexGuard.sol#64-81) uses timestamp for comparisons
+	Dangerous comparisons:
+	- block.timestamp < m.validAfter || block.timestamp > m.expiry (contracts/src/MandavexGuard.sol#68)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#block-timestamp
+INFO:Detectors:
+Detector: assembly
+MandavexGuard._recover(bytes32,bytes) (contracts/src/MandavexGuard.sol#103-114) uses assembly
+	- INLINE ASM (contracts/src/MandavexGuard.sol#106-110)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#assembly-usage
+INFO:Detectors:
+Detector: low-level-calls
+Low level call in MandavexGuard._hasAgentId(address) (contracts/src/MandavexGuard.sol#83-87):
+	- (ok,result) = agentId.staticcall(abi.encodeWithSignature(balanceOf(address),account)) (contracts/src/MandavexGuard.sol#84)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#low-level-calls
+INFO:Slither:contracts/src/MandavexGuard.sol analyzed (1 contracts with 102 detectors), 3 result(s) found

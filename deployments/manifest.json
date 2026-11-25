@@ -1,0 +1,19 @@
+{
+  "project": "MANDAVEX",
+  "status": "PRE_DEPLOYMENT",
+  "network": {
+    "name": "BNB Smart Chain",
+    "chainId": 56,
+    "agentIdRegistry": "0x60b9262456de011f7d15a54cdd8c48baaa8b022f",
+    "agentIdRegistrySource": "official Binance hackathon announcement",
+    "mandavexGuard": null
+  },
+  "deploymentTransaction": null,
+  "deploymentBlock": null,
+  "compiler": "solc 0.8.39",
+  "optimizer": { "enabled": true, "runs": 200 },
+  "evmVersion": "paris",
+  "sourceCommit": null,
+  "bscScanVerification": null,
+  "adminPermissions": "Source and ABI expose no owner/admin function; the contract is immutable with no upgrade role. Fork test also asserts no owner function is present. Source is not deployed."
+}

@@ -1,0 +1,26 @@
+{
+  "name": "mandavex-protocol",
+  "version": "0.1.0",
+  "description": "Permission-bound execution for autonomous agents",
+  "private": true,
+  "license": "Apache-2.0",
+  "type": "module",
+  "scripts": {
+    "compile:contracts": "node scripts/compile-contract.cjs",
+    "dev": "node scripts/dev-server.cjs",
+    "test:evm": "node --test tests/evm.test.cjs",
+    "test:bsc-fork": "node --test tests/bsc-fork.test.cjs",
+    "test": "node --test"
+  },
+  "devDependencies": {
+    "hardhat": "^3.22.0",
+    "solc": "0.8.39"
+  },
+  "dependencies": {
+    "ethers": "^6.17.0"
+  },
+  "overrides": {
+    "tmp": "0.2.7",
+    "zod": "4.6.6"
+  }
+}
