@@ -75,3 +75,47 @@ test('production Agent ID registry is loaded from a block-pinned BSC fork and re
   assert.equal(await guard.demoCounter(), 0n);
   console.log(JSON.stringify({ network: 'BSC mainnet state fork', forkBlock, registry: AGENT_ID_BSC, constructorArgument: AGENT_ID_BSC, deploymentGasUsed: deploymentReceipt.gasUsed.toString(), guardRuntimeCodeBytes: ((await provider.getCode(await guard.getAddress())).length - 2) / 2, registryCodeBytes: (code.length - 2) / 2, result: 'non-holder rejected at execution boundary' }));
 });
+
+test('a real Agent ID holder passes both production registry identity gates on the BSC fork', async () => {
+  // Public holder discovered from the official registry's mint Transfer event.
+  // Impersonation is confined to this local fork; the signature is intentionally
+  // invalid so this proves identity acceptance only, not authorized execution.
+  const holder = '0x9cfbb2cc07cdf46c2b789926b6adcc905a749b07';
+  const reader = new ContractFactory([
+    'function balanceOf(address owner) view returns (uint256)',
+  ], '0x', provider).attach(AGENT_ID_BSC);
+  assert.ok(await reader.balanceOf(holder) > 0n, 'selected address must still hold a production Agent ID');
+
+  const guard = await new ContractFactory(contract.abi, contract.evm.bytecode.object, await provider.getSigner(0))
+    .deploy(AGENT_ID_BSC);
+  await guard.waitForDeployment();
+  const block = await provider.getBlock('latest');
+  const payload = toUtf8Bytes('positive identity gate probe');
+  const mandate = {
+    issuer: holder,
+    executor: holder,
+    action: keccak256(toUtf8Bytes('MANDAVEX_DEMO_INCREMENT_V1')),
+    payloadHash: keccak256(payload),
+    validAfter: BigInt(block.timestamp - 1),
+    expiry: BigInt(block.timestamp + 300),
+    nonce: 880001n,
+    maxUses: 1,
+  };
+
+  let error;
+  try {
+    await provider.call({
+      from: holder,
+      to: await guard.getAddress(),
+      data: guard.interface.encodeFunctionData('execute', [mandate, payload, '0x']),
+    });
+  } catch (caught) { error = caught; }
+  assert.ok(error, 'empty signature should be rejected');
+  const serialized = JSON.stringify(error, Object.getOwnPropertyNames(error)).toLowerCase();
+  const signatureSelector = keccak256(toUtf8Bytes('InvalidSignature()')).slice(0, 10).toLowerCase();
+  assert.ok(serialized.includes(signatureSelector), `expected InvalidSignature after identity checks, got: ${serialized.slice(0, 800)}`);
+  assert.equal(await guard.demoCounter(), 0n);
+  console.log(JSON.stringify({ network: 'local BSC mainnet-state fork', forkBlock, registry: AGENT_ID_BSC,
+    holder, balance: 'positive', result: 'issuer and executor identity gates passed; execution stopped at invalid signature',
+    limitation: 'fork-only impersonation; no real holder signature and no successful authorized execution' }));
+});

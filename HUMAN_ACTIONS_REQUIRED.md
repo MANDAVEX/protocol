@@ -1,9 +1,22 @@
 # HUMAN_ACTIONS_REQUIRED
 
-No immediate action requested.
+## Immediate positive-path wallet action
 
-Before mainnet launch, an authorized human must review the final immutable contract and confirm a funded deployment transaction; gas budget must be disclosed first. Agent ID holders must themselves initiate and confirm qualifying interactions. Competition submission must be completed by an authorized participant, with any account authentication or binding terms handled directly by that person.
+The next successful authorization probe needs a real signature from an Agent ID holder. The test can use a holder's own Agentic Wallet address as both issuer and executor. Never use another person's address or impersonate an address outside the local fork.
 
-No action is needed for the Pages setup. A genuine Agent ID holder must initiate any qualifying interaction and a funded, authorized human wallet must confirm any mainnet deployment after review and gas disclosure. DNS for `mandavex.io` currently returns no records and an RDAP lookup did not return a domain record; availability/ownership remains unverified, and no registration attempt was made.
+When the wallet exercise is staged, the holder must:
 
-No X/GitHub account action, paid hosting, domain purchase, mainnet spend, or submission has been performed.
+1. Use the official Binance Agentic Wallet integration and enable Developer Mode in the Binance App (Agentic Wallet management → Settings → Developer Mode), reviewing Binance's warning.
+2. Inspect and approve the exact EIP-712 mandate preview. It is scoped to the Guard contract, BSC chain 56, the demo counter increment, one exact payload, a short expiry and one use.
+3. Inspect and approve the contract-call preview. This executes only the `MandavexGuard.execute` action. Do not proceed if the Guard address, action, payload, fee or simulation differs from the review.
+4. Confirm any additional Binance App prompt. The test runs against a local BSC fork and is not mainnet activity.
+
+The official CLI is not installed or authenticated in this workspace, and the fork signing harness is not yet staged; do not run or sign anything yet. No signature or secret is requested in chat.
+
+## Mainnet launch (not ready for approval)
+
+Do not approve a deployment transaction yet. The Guard is experimental, not independently audited and has not completed a genuine holder-signed execution. Once those gates pass, a human with an authorized project deployment wallet must review the final source/constructor and exact gas estimate, then approve the transaction in their own wallet. No seed phrase or private key should be shared.
+
+## Competition participation
+
+An Agent ID holder must initiate any real qualifying interaction from their own wallet. Only after a deployed product is working should an authorized project participant submit the project during the official window. No paid service, domain purchase, social post or mainnet spend has been made.

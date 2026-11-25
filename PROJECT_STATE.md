@@ -35,3 +35,9 @@ PARTIALLY IMPLEMENTED. The minimal Guard prototype now has local EVM lifecycle/a
 3. Complete Passport, Arena, Genesis, adoption evidence and agent onboarding only after core execution is deployed.
 4. Mainnet contract deployment requires a human-controlled wallet confirmation and disclosed gas; no keys or budget are available here.
 5. Recruit genuine Agent ID holders only after the product is deployed; no manufactured activity.
+
+## Phase III — 2026-11-26
+
+Current repository state is Phase III in progress. The experimental Guard is still undeployed and has no production address. `npm test` passes 18 tests, including a block-pinned fork read of the official BSC Agent ID registry. A public observed holder passes both identity checks on the fork; the call is intentionally rejected at signature validation because no genuine holder signature has been provided. This establishes positive identity-gate behavior, not successful authorization.
+
+The official wallet EIP-712 + contract-call flow has been researched from Binance documentation, but has not been connected or executed. The public site remains a static prototype. Phase III acceptance statuses and concrete blockers are in `PHASE_III_ACCEPTANCE.md`.

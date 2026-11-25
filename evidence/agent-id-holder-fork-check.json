@@ -1,0 +1,36 @@
+{
+  "status": "PARTIALLY IMPLEMENTED",
+  "network": "BNB Smart Chain mainnet state, read through public JSON-RPC; execution probe on a local fork only",
+  "registry": "0x60b9262456de011f7d15a54cdd8c48baaa8b022f",
+  "holderAddress": "0x9cfbb2cc07cdf46c2b789926b6adcc905a749b07",
+  "ownershipObservation": {
+    "blockNumber": 135738237,
+    "blockHash": "0xa9de3db915d455d1c88c2d36c53e57b46fba37b110e82b7d2599936b317ae3d6",
+    "balanceOfAtBlock": "1",
+    "mintTransaction": "0x8587a1d7414ae912e04e347a2210f919b7411d762f1dc4b40f01cc57c9e71734",
+    "transactionStatus": "0x1",
+    "transferEvent": {
+      "from": "0x0000000000000000000000000000000000000000",
+      "to": "0x9cfbb2cc07cdf46c2b789926b6adcc905a749b07",
+      "tokenId": "0x3e8a0cd81aef985020aaaec70cfd235099620d5b012ee65fb2e74c761adc1f3a"
+    }
+  },
+  "forkTest": {
+    "testFile": "tests/bsc-fork.test.cjs",
+    "forkBlock": 135744868,
+    "observedBalanceOf": "positive",
+    "issuerIdentityGate": "passed",
+    "executorIdentityGate": "passed",
+    "signatureCheck": "rejected the intentionally empty signature with InvalidSignature",
+    "demoCounterAfterProbe": 0,
+    "forkOnlyCallerSimulation": true
+  },
+  "limitations": [
+    "The holder's private key was not used and no holder signature was requested or produced.",
+    "The guarded execution did not succeed; the test proves the production identity gates accept the observed holder before signature validation.",
+    "This local fork probe is not mainnet participation, official Agentic Wallet integration, or a qualifying competition interaction."
+  ],
+  "rpcEndpoint": "https://bsc-rpc.publicnode.com",
+  "explorerTransaction": "https://bscscan.com/tx/0x8587a1d7414ae912e04e347a2210f919b7411d762f1dc4b40f01cc57c9e71734",
+  "explorerAddress": "https://bscscan.com/address/0x9cfbb2cc07cdf46c2b789926b6adcc905a749b07"
+}

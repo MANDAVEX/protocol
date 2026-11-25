@@ -1,36 +1,32 @@
-MANDAVEX Phase II runtime evidence
-Command: npm test
-Run date: 2026-11-26 (Africa/Algiers)
-Network: local Hardhat EVM plus BNB Smart Chain mainnet-state fork
-Limitations: fork loaded production registry state but tested only a generated non-holder. Deterministic local identities are not production identities. This is not mainnet deployment evidence.
-
 
 > mandavex-protocol@0.1.0 test
 > node --test
 
-{"network":"BSC mainnet state fork","forkBlock":135741750,"registry":"0x60b9262456de011f7d15a54cdd8c48baaa8b022f","constructorArgument":"0x60b9262456de011f7d15a54cdd8c48baaa8b022f","deploymentGasUsed":"869531","guardRuntimeCodeBytes":3758,"registryCodeBytes":8756,"result":"non-holder rejected at execution boundary"}
-✔ production Agent ID registry is loaded from a block-pinned BSC fork and rejects local non-holder (5649.9805ms)
-✔ valid EIP-712 mandate executes, consumes bounded use, emits proof, and revokes (1621.8916ms)
-✔ unknown Agent ID executor fails closed and leaves state unchanged (562.6931ms)
-✔ issuer Agent ID is rechecked at execution, not trusted from mandate creation (603.2053ms)
-✔ wrong caller, altered payload, altered action, and wrong issuer signature are rejected (606.0573ms)
-✔ expired mandate is rejected at the execution boundary (548.6073ms)
-✔ future mandate, malformed signature, and cross-contract typed-data replay are rejected (645.7876ms)
-✔ mandate maximum uses are enforced while the same mandate remains bound to one nonce (687.3147ms)
-✔ issuer nonce cannot be rebound to a different mandate (617.4091ms)
-✔ seeded payload fuzz rejects malformed requests without changing invariants (3573.3201ms)
-✔ deployment rejects a registry address without contract code (72.852ms)
-✔ contract compiles to non-empty deployable bytecode (0.7917ms)
-✔ ABI exposes the intended execution and revocation surface (0.2214ms)
-✔ source uses execution-time fail-closed identity reads and a narrow deterministic action (0.2471ms)
-✔ source includes chain and contract domain binding, expiry, revocation and bounded uses (0.179ms)
-✔ SDK publishes official BSC identity and the exact demo action hash (1.0008ms)
-✔ SDK builds a chain- and contract-bound typed mandate (0.5056ms)
-ℹ tests 17
+{"network":"BSC mainnet state fork","forkBlock":135744868,"registry":"0x60b9262456de011f7d15a54cdd8c48baaa8b022f","constructorArgument":"0x60b9262456de011f7d15a54cdd8c48baaa8b022f","deploymentGasUsed":"869531","guardRuntimeCodeBytes":3758,"registryCodeBytes":8756,"result":"non-holder rejected at execution boundary"}
+✔ production Agent ID registry is loaded from a block-pinned BSC fork and rejects local non-holder (7428.7334ms)
+{"network":"local BSC mainnet-state fork","forkBlock":135744868,"registry":"0x60b9262456de011f7d15a54cdd8c48baaa8b022f","holder":"0x9cfbb2cc07cdf46c2b789926b6adcc905a749b07","balance":"positive","result":"issuer and executor identity gates passed; execution stopped at invalid signature","limitation":"fork-only impersonation; no real holder signature and no successful authorized execution"}
+✔ a real Agent ID holder passes both production registry identity gates on the BSC fork (2458.1644ms)
+✔ valid EIP-712 mandate executes, consumes bounded use, emits proof, and revokes (3753.1535ms)
+✔ unknown Agent ID executor fails closed and leaves state unchanged (580.8397ms)
+✔ issuer Agent ID is rechecked at execution, not trusted from mandate creation (620.601ms)
+✔ wrong caller, altered payload, altered action, and wrong issuer signature are rejected (652.784ms)
+✔ expired mandate is rejected at the execution boundary (543.1735ms)
+✔ future mandate, malformed signature, and cross-contract typed-data replay are rejected (668.5493ms)
+✔ mandate maximum uses are enforced while the same mandate remains bound to one nonce (733.7012ms)
+✔ issuer nonce cannot be rebound to a different mandate (623.629ms)
+✔ seeded payload fuzz rejects malformed requests without changing invariants (3776.4902ms)
+✔ deployment rejects a registry address without contract code (59.5007ms)
+✔ contract compiles to non-empty deployable bytecode (2.946ms)
+✔ ABI exposes the intended execution and revocation surface (0.8445ms)
+✔ source uses execution-time fail-closed identity reads and a narrow deterministic action (0.9056ms)
+✔ source includes chain and contract domain binding, expiry, revocation and bounded uses (0.6834ms)
+✔ SDK publishes official BSC identity and the exact demo action hash (2.0715ms)
+✔ SDK builds a chain- and contract-bound typed mandate (0.7229ms)
+ℹ tests 18
 ℹ suites 0
-ℹ pass 17
+ℹ pass 18
 ℹ fail 0
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 12104.7161
+ℹ duration_ms 18133.2668

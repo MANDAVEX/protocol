@@ -2,7 +2,7 @@ const { before, after, test } = require('node:test');
 const assert = require('node:assert/strict');
 const { spawn } = require('node:child_process');
 const path = require('node:path');
-const { JsonRpcProvider, ContractFactory, keccak256, toUtf8Bytes } = require('ethers');
+const { JsonRpcProvider, ContractFactory, Signature, concat, keccak256, toBeHex, toUtf8Bytes } = require('ethers');
 const { contract, mock } = require('../scripts/compile-contract.cjs');
 
 const port = 18545;
@@ -94,7 +94,7 @@ test('valid EIP-712 mandate executes, consumes bounded use, emits proof, and rev
   await expectCustomError(ctx.guard.connect(ctx.executor).execute(mandate, payload, signature), 'UseLimit()');
   await (await ctx.guard.revoke(mandate)).wait();
   assert.equal(await ctx.guard.revoked(await ctx.guard.mandateId(mandate)), true);
-  await expectCustomError(ctx.guard.connect(ctx.executor).execute(mandate, payload, signature), 'Revoked()');
+  await expectCustomError(ctx.guard.connect(ctx.executor).execute.staticCall(mandate, payload, signature), 'Revoked()');
 });
 
 test('unknown Agent ID executor fails closed and leaves state unchanged', async () => {
@@ -122,6 +122,12 @@ test('wrong caller, altered payload, altered action, and wrong issuer signature 
   const badSig = await ctx.executor.signTypedData({ name: 'MANDAVEX', version: '1', chainId: 31337, verifyingContract: await ctx.guard.getAddress() }, types, signed.mandate);
   await expectCustomError(ctx.guard.connect(ctx.executor).execute(otherAction, payload, signed.signature), 'ScopeMismatch()');
   await expectCustomError(ctx.guard.connect(ctx.executor).execute(signed.mandate, payload, badSig), 'InvalidSignature()');
+  const parsed = Signature.from(signed.signature);
+  const curveOrder = 0xfffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141n;
+  const highS = curveOrder - BigInt(parsed.s);
+  const highV = parsed.v === 27 ? 28 : 27;
+  const malleableSig = concat([parsed.r, toBeHex(highS, 32), toBeHex(highV, 1)]);
+  await expectCustomError(ctx.guard.connect(ctx.executor).execute.staticCall(signed.mandate, payload, malleableSig), 'InvalidSignature()');
   assert.equal(await ctx.guard.demoCounter(), 0n);
 });
 

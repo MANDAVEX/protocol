@@ -17,3 +17,10 @@ The owner-controlled public repository was verified in the signed-in GitHub sess
 
 ## 2026-11-26 — Enable GitHub Pages Actions source
 The user approved publishing the static preview and its Pages workflow permissions. The initial run failed at setup while the repository Pages source was disabled. GitHub Actions was selected as the source; the next workflow and CI run succeeded and the page plus assets were verified over HTTPS. The deployed page remains a preview, not the complete protocol workflow.
+
+## Phase III status — 2026-11-26
+
+- Added a production-registry holder fork probe. It proves an observed holder passes both issuer and executor identity checks. The probe deliberately uses an empty signature and therefore does not claim successful authorization or execution.
+- Added source evidence for the holder's successful Agent ID mint and block-pinned `balanceOf`, plus a Phase III gate matrix. Current full results: 18/18 runtime tests pass.
+- Official Agentic Wallet documentation describes a supported Developer Mode workflow for EIP-712 signing and external contract calls with preview and user confirmation. The integration remains untested; see `docs/AGENTIC_WALLET_WORKFLOW.md`.
+- GitHub Pages logs on commit `bbcbec3` showed `upload-pages-artifact` completed and created a `github-pages` artifact, but `deploy-pages` immediately found zero artifacts. This matches the documented intermittent lookup race in [actions/deploy-pages issue 451](https://github.com/actions/deploy-pages/issues/451). The workflow now moves upload and deployment to separate dependent jobs, pins current major action versions and scopes `pages: write`/`id-token: write` to deployment only. A fresh successful run is still required to verify the repair.
