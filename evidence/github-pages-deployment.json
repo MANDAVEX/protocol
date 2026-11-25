@@ -1,0 +1,22 @@
+{
+  "status": "VERIFIED",
+  "date": "2026-11-26",
+  "commit": "047afa7fb74cb137e105bb32f716db9fb95eafa5",
+  "workflowRun": "https://github.com/MANDAVEX/protocol/actions/runs/45719387153",
+  "workflowConclusion": "success",
+  "buildWorkflowRun": "https://github.com/MANDAVEX/protocol/actions/runs/45719387201",
+  "buildConclusion": "success",
+  "url": "https://mandavex.github.io/protocol/",
+  "checks": {
+    "independentBrowserTitle": "MANDAVEX — Authority for Autonomous Intelligence",
+    "pageHttpStatus": 200,
+    "javascriptHttpStatus": 200,
+    "stylesheetHttpStatus": 200,
+    "prototypeStatusTextPresent": true
+  },
+  "limitations": [
+    "This is the public static preview and connected-address identity read only.",
+    "It has no Guard deployment address and does not submit protocol transactions.",
+    "Its availability does not establish mainnet execution or competition eligibility."
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "status": "VERIFIED",
+  "estimateType": "Unsigned mainnet transaction preparation; no send",
+  "localDate": "2026-11-26 (Africa/Algiers)",
+  "network": "BNB Smart Chain mainnet",
+  "chainId": 56,
+  "blockNumber": 135741871,
+  "registry": "0x60b9262456de011f7d15a54cdd8c48baaa8b022f",
+  "gasEstimate": "877599",
+  "gasLimit": "1053118",
+  "feePerGasWeiAtPreparation": "50000000",
+  "estimatedFeeBNBAtPreparation": "0.0000526559",
+  "initCodeBytes": 4024,
+  "evidenceScript": "scripts/prepare-bsc-deployment.cjs",
+  "limitations": [
+    "RPC estimate only; fee and inclusion conditions may change.",
+    "No private key was read and no transaction was sent.",
+    "No mainnet deployment or wallet confirmation is represented."
+  ]
+}

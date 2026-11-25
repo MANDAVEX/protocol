@@ -7,6 +7,8 @@
   "type": "module",
   "scripts": {
     "compile:contracts": "node scripts/compile-contract.cjs",
+    "estimate:bsc-deployment": "node scripts/estimate-bsc-deployment.cjs",
+    "prepare:bsc-deployment": "node scripts/prepare-bsc-deployment.cjs",
     "dev": "node scripts/dev-server.cjs",
     "test:evm": "node --test tests/evm.test.cjs",
     "test:bsc-fork": "node --test tests/bsc-fork.test.cjs",

@@ -1,14 +1,12 @@
 {
   "status": "IMPLEMENTED BUT UNVERIFIED",
   "network": "BNB Smart Chain mainnet-state fork",
-  "chainId": 56,
-  "forkBlock": 135738724,
+  "forkBlock": 135741750,
   "registry": "0x60b9262456de011f7d15a54cdd8c48baaa8b022f",
   "constructorArgument": "0x60b9262456de011f7d15a54cdd8c48baaa8b022f",
   "deploymentGasUsed": 869531,
   "guardRuntimeCodeBytes": 3758,
   "price": "Not estimated",
-  "reason": "Gas price and inclusion conditions vary; no live transaction was sent.",
   "evidence": "evidence/runtime-test-report.txt",
-  "limitations": "Fork deployment receipt; not a mainnet transaction. Does not estimate BNB fee without a live gas price."
+  "limitations": "Fork deployment only; no live transaction or genuine holder-positive-path test."
 }
