@@ -14,3 +14,6 @@ The MANDAVEX GitHub organization has a public `protocol` repository on `main` wi
 
 ## 2026-11-26 — Publish the reviewed prototype and add CI
 The owner-controlled public repository was verified in the signed-in GitHub session. After lifecycle/fork tests, Slither review, dependency audit, and a credential-pattern scan, publish commit `2158f9ab45f080b2055e2559d1b1e9bfd1fba8d3`. CI runs EVM/fork tests, compilation, dependency audit, and a JavaScript syntax check. A GitHub Pages workflow is prepared separately and remains unpublished pending permission confirmation.
+
+## 2026-11-26 — Enable GitHub Pages Actions source
+The user approved publishing the static preview and its Pages workflow permissions. The first run failed at setup while the repository Pages source was disabled. Repository settings now show GitHub Actions as the source; a new run must succeed and the resulting HTTPS page must be checked before calling the site deployed.

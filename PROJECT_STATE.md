@@ -21,7 +21,7 @@ PARTIALLY IMPLEMENTED. The minimal Guard prototype now has local EVM lifecycle/a
 ## Unverified
 - Registry runtime code and basic ERC-721 interface behavior were queried; authoritative verified source, complete ABI, proxy/upgrade mechanism, and identity lifecycle have not been independently established.
 - No holder-positive-path fork test: no genuine Agent ID test account/key was supplied, and the test intentionally does not impersonate a holder.
-- Browser preview has not been end-to-end tested in a browser and is not deployed. GitHub Pages workflow is prepared locally but pending approval to grant its publish and identity-token permissions. No real user interactions, qualifying adoption evidence, or competition submission exist.
+- Browser preview has not been end-to-end tested in a browser. GitHub Pages source is enabled for GitHub Actions; the first run failed at setup before upload while Pages was disabled. A fresh run is pending; the public URL is not verified yet. No real user interactions, qualifying adoption evidence, or competition submission exist.
 
 ## Current decisions
 - See DECISIONS.md. Small immutable contract, no custody, execution-time Agent ID checks; no mainnet token.
