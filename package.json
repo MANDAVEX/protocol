@@ -26,7 +26,8 @@
     "@ethereumjs/vm": "^10.1.3",
     "esbuild": "^0.28.2",
     "hardhat": "^3.22.0",
-    "solc": "0.8.39"
+    "solc": "0.8.39",
+    "wrangler": "^4.168.0"
   },
   "dependencies": {
     "ethers": "^6.17.0"

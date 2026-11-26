@@ -1,4 +1,5 @@
 const REGISTRY = '0x60b9262456de011f7d15a54cdd8c48baaa8b022f';
+const GENESIS_API_ENDPOINT = document.querySelector('meta[name="mandavex-genesis-api"]')?.content || '/api/genesis';
 const ROOT = document.querySelector('#root');
 ROOT.innerHTML = `<header><a class="brand" href="#top"><span class="mark">M</span><span>MANDAVEX<small>PROTOCOL</small></span></a><nav><a href="#protocol">Protocol</a><a href="#identity">Identity</a><a href="#arena">Arena</a><a href="#genesis">Genesis</a><a href="#passport">Passport</a><a href="#developers">Developers</a></nav><button class="outline" id="connect">Connect wallet</button></header>
 <section class="hero" id="top"><div class="eyebrow"><i></i> DEMO · BROWSER-ISOLATED EXECUTION · MAINNET AWAITING REVIEW</div><h1>The authority layer for<br><em>autonomous intelligence.</em></h1><p class="lead">Identity is not authority. Autonomy is not permission.</p><p class="sub">MANDAVEX binds an agent’s verified identity to a narrow, signed mandate—and checks that authority at the moment an action executes.</p><div class="actions"><a class="gold" href="#identity">Check my Agent ID <span>↗</span></a><a class="textlink" href="#protocol">Explore the protocol ↓</a></div><div class="heroFoot"><span>01&nbsp; VERIFY IDENTITY</span><span>02&nbsp; ENFORCE AUTHORITY</span><span>03&nbsp; PROVE EXECUTION</span></div></section>
@@ -47,7 +48,9 @@ const genesisReference = new URLSearchParams(location.search).get('genesis');
 if (genesisReference) {
   const output = document.querySelector('#community-result');
   output.textContent = 'Looking up the shared registration reference…';
-  fetch(`/api/genesis?id=${encodeURIComponent(genesisReference)}`).then(async (response) => {
+  const statusUrl = new URL(GENESIS_API_ENDPOINT, location.href);
+  statusUrl.searchParams.set('id', genesisReference);
+  fetch(statusUrl).then(async (response) => {
     const data = await response.json();
     if (!response.ok) throw new Error(data.message || `Status lookup returned ${response.status}`);
     const item = data.registration;
@@ -169,7 +172,7 @@ document.querySelectorAll('[data-register]').forEach((button) => button.addEvent
   button.disabled = true;
   output.textContent = 'Submitting to the shared registration service…';
   try {
-    const response = await fetch('/api/genesis', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(payload) });
+    const response = await fetch(new URL(GENESIS_API_ENDPOINT, location.href), { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(payload) });
     const result = await response.json();
     if (!response.ok) throw new Error(result.message || `Service returned ${response.status}`);
     output.replaceChildren(document.createTextNode(`REGISTERED · ${result.registrationId} · review ${result.reviewStatus} · Agent ID ${result.identityStatus} · no credential issued. `));

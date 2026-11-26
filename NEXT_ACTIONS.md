@@ -1,13 +1,21 @@
 # Next Actions
 
-Updated: 2026-11-26 02:00 UTC.
+## Active continuation — Cloudflare Genesis
+
+- Await the user's click or cancellation on GitHub's Cloudflare Workers and Pages authorization screen; do not accept the new security access on their behalf.
+- Resume GitHub repository linking after the user returns. Create only a free Pages project and free D1 database; preserve the project-level D1 binding and apply `infra/cloudflare/migrations/0001_genesis.sql`.
+- Wrangler 4.168.0 is installed and its local D1 migration procedure is verified. Once the remote D1 ID and Pages project exist, use the explicit `--remote` migration path, configure `RATE_LIMIT_SALT` as an encrypted secret (never commit it), deploy Pages Functions, and set the production `mandavex-genesis-api` meta endpoint to the verified `pages.dev` URL.
+- Verify the production UI and API from distinct browser contexts against D1: registration persistence, duplicate handling, invalid data, rate limits, identity lookup, OPTIONS/CORS allowlist, status reference and storage/RPC failures. Do not activate Genesis until every check passes.
+- Then continue the remaining Titanium priorities: desktop/mobile workflow smoke, privacy/retention policy, public adoption dashboard, wallet integration review, security hardening and competition evidence. Keep mainnet transaction count zero unless independently verified real interactions exist.
+
+Updated: 2026-11-27 00:20 UTC.
 
 ## Operation Titanium progress — 2026-11-26
 
 - Implemented fixed permission-bound task submission and review acceptance in the Guard, Arena, SDK and preparation-only CLI, including unsigned revoke calldata. Local EVM tests verify exact-hash acceptance, distinct reviewer enforcement, and rejection of self-review, wrong owner, duplicate tasks and malformed payloads.
 - Added eight focused indexer tests covering canonical receipts, reorg rejection, failed receipts, direct versus relayed senders, address de-duplication, competition-window edges, historical identity state, RPC failures and adaptive pagination.
 - Added six Genesis handler checks for configuration failure, malformed/invalid/duplicate registrations, hashed rate-limit keys, six-per-window throttling, block-pinned identity lookup and D1/RPC failure fallback.
-- Final full test run: 40 passed, 0 failed, including the refactored Guard validation path. Contract compile succeeded at 5,634-byte creation bytecode; browser build succeeded; Slither reports three known observations with a compiler-wrapper warning; authorized npm audit found 0 vulnerabilities. Release `467cbbf` is committed and public; CI/Pages pass and deployed metadata/assets match. Interactive browser smoke for the new workflow remains pending. Shared Cloudflare D1 is not configured. Browser account sign-in is pending the founder's action on Google's profile/email sharing consent screen.
+- Final previous full test run: 40 passed, 0 failed, including the refactored Guard validation path. The current follow-up run passes 41/41; contract compile, browser build, and authorized dependency audit pass. Release `f345192` was the starting checkpoint for this continuation. Cloudflare dashboard sign-in is complete; GitHub Workers and Pages authorization remains with the user. Shared Cloudflare D1 is not configured.
 - npm audit and public BNB RPC checks are explicitly authorized; the default environment cannot reach those endpoints, so run only where network access is available. No deployment transaction or spend is authorized.
 
 ## Last completed

@@ -40,7 +40,7 @@ class MockD1 {
   }
 }
 
-function env(DB = new MockD1()) { return { DB, RATE_LIMIT_SALT: 'test-only-salt' }; }
+function env(DB = new MockD1()) { return { DB, RATE_LIMIT_SALT: 'test-only-salt', GENESIS_ALLOWED_ORIGIN: 'https://mandavex.github.io' }; }
 function request(body, { ip = '203.0.113.7' } = {}) {
   return new Request('https://example.test/api/genesis', { method: 'POST', headers: { 'content-type': 'application/json', 'cf-connecting-ip': ip }, body: JSON.stringify(body) });
 }
@@ -51,6 +51,21 @@ test('Genesis fails closed when shared database or rate limit configuration is a
   assert.equal((await unavailable.json()).status, 'BLOCKED');
   const noIp = await api.onRequestPost({ request: new Request('https://example.test/api/genesis', { method: 'POST', body: '{"program":"community"}' }), env: env() });
   assert.equal(noIp.status, 503);
+});
+
+test('Genesis CORS allows only the production website and serves its JSON preflight', async () => {
+  const bindings = env();
+  const allowed = await api.onRequestOptions({ request: new Request('https://api.example.test/api/genesis', { method: 'OPTIONS', headers: { origin: 'https://mandavex.github.io', 'access-control-request-method': 'POST', 'access-control-request-headers': 'content-type' } }), env: bindings });
+  assert.equal(allowed.status, 204);
+  assert.equal(allowed.headers.get('access-control-allow-origin'), 'https://mandavex.github.io');
+  assert.match(allowed.headers.get('access-control-allow-methods'), /POST/);
+
+  const denied = await api.onRequestOptions({ request: new Request('https://api.example.test/api/genesis', { method: 'OPTIONS', headers: { origin: 'https://attacker.example' } }), env: bindings });
+  assert.equal(denied.status, 403);
+  assert.equal(denied.headers.get('access-control-allow-origin'), null);
+
+  const response = await api.onRequestPost({ request: new Request('https://api.example.test/api/genesis', { method: 'POST', headers: { origin: 'https://mandavex.github.io', 'content-type': 'application/json', 'cf-connecting-ip': '203.0.113.7' }, body: '{"program":"community"}' }), env: bindings });
+  assert.equal(response.headers.get('access-control-allow-origin'), 'https://mandavex.github.io');
 });
 
 test('Genesis reports malformed JSON and D1 read/write failures without claiming success', async () => {

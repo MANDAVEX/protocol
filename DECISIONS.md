@@ -36,6 +36,12 @@ The user approved publishing the static preview and its Pages workflow permissio
 - Store task owner, contributor, reviewer, state and artifact hash on the Guard. Acceptance requires the owner's fresh mandate, an Agent ID executor distinct from the contributor, and the submitted artifact hash. Artifact bytes remain off-chain and must be independently checked by the reviewer.
 - Keep the browser workflow on the compiled Solidity implementation, using local mock identities and ephemeral demo keys. This workflow is simulation evidence only; production wallet transactions remain disabled until a deployment is reviewed.
 
+## 2026-11-26 — Keep Genesis on a free Pages service with an exact frontend origin
+
+- Use Cloudflare Pages Functions and D1 for shared Genesis registration, with the migration and D1 binding kept in `wrangler.toml` and source control. Dashboard drag-and-drop does not compile the Functions directory; Git integration or Wrangler is required.
+- Keep the existing GitHub Pages site as the public frontend. Its configurable Genesis API endpoint may target the Cloudflare Pages service, while the API returns browser CORS headers only for the exact configured `https://mandavex.github.io` origin. No wildcard origin or credentialed browser requests are allowed.
+- The Pages Function remains fail-closed if D1 or the private rate-limit salt is missing. The service is not active until database migration, secret binding, deployed endpoint, privacy/retention review, and independent-client persistence checks succeed.
+
 ## Phase III status — 2026-11-26
 
 - Added a production-registry holder fork probe. It proves an observed holder passes both issuer and executor identity checks. The probe deliberately uses an empty signature and therefore does not claim successful authorization or execution.
