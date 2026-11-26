@@ -6,6 +6,8 @@ Updated: 2026-11-27
 
 PARTIALLY IMPLEMENTED. Cloudflare account authentication succeeded through the existing Google account. The Cloudflare Workers and Pages GitHub authorization screen was reached; the user is completing the final authorization. No Pages project, D1 database, secret, production migration, or remote deployment has been verified. The shared registration service remains inactive.
 
+Reviewed local commit `1eea8a0586897b4aacdcb0bea2aaa9a4cf176ce4` was published to the existing public repository and GitHub Pages. CI succeeded at [run 45910841269](https://github.com/MANDAVEX/protocol/actions/runs/45910841269); GitHub Pages succeeded at [run 45910841169](https://github.com/MANDAVEX/protocol/actions/runs/45910841169). Public build metadata reports that exact commit, and `main.js`, `arena-worker.js`, and `arena-artifacts.json` returned HTTP 200. This is the static GitHub Pages build; it does not activate Cloudflare Genesis.
+
 ## Implemented locally
 
 - `wrangler.toml` keeps the Pages project name, output directory, D1 binding placeholder, migration directory, and the single allowed production web origin.
