@@ -6,7 +6,7 @@
 - Resume GitHub repository linking after the user returns. Create only a free Pages project and free D1 database; preserve the project-level D1 binding and apply `infra/cloudflare/migrations/0001_genesis.sql`.
 - Wrangler 4.168.0 is installed and its local D1 migration procedure is verified. Once the remote D1 ID and Pages project exist, use the explicit `--remote` migration path, configure `RATE_LIMIT_SALT` as an encrypted secret (never commit it), deploy Pages Functions, and set the production `mandavex-genesis-api` meta endpoint to the verified `pages.dev` URL.
 - Verify the production UI and API from distinct browser contexts against D1: registration persistence, duplicate handling, invalid data, rate limits, identity lookup, OPTIONS/CORS allowlist, status reference and storage/RPC failures. Do not activate Genesis until every check passes.
-- Then continue the remaining Titanium priorities: desktop/mobile workflow smoke, privacy/retention policy, public adoption dashboard, wallet integration review, security hardening and competition evidence. Keep mainnet transaction count zero unless independently verified real interactions exist.
+- After the user completes the GitHub authorization, finish the Pages/D1 setup and run the pending desktop/mobile smoke for Genesis, collaboration, and the new Adoption panel. Then address Genesis privacy/retention, wallet integration review, security hardening, and competition evidence. Keep mainnet transaction count zero unless independently verified real interactions exist.
 
 Updated: 2026-11-27 00:20 UTC.
 

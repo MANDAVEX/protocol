@@ -42,6 +42,11 @@ The user approved publishing the static preview and its Pages workflow permissio
 - Keep the existing GitHub Pages site as the public frontend. Its configurable Genesis API endpoint may target the Cloudflare Pages service, while the API returns browser CORS headers only for the exact configured `https://mandavex.github.io` origin. No wildcard origin or credentialed browser requests are allowed.
 - The Pages Function remains fail-closed if D1 or the private rate-limit salt is missing. The service is not active until database migration, secret binding, deployed endpoint, privacy/retention review, and independent-client persistence checks succeed.
 
+## 2026-11-27 — Generate the public adoption panel from reviewed evidence
+
+- Build `apps/web/adoption-status.json` from the deployment manifest and optional saved indexer report. Before a BNB deployment or matching scan exists, show `BLOCKED`/`NOT RUN` and unknown counts instead of zero or demo totals.
+- Only accept reports that identify BNB Chain 56, the manifest Guard, official Agent ID registry, a valid deployment-bounded block range, unique candidate senders, and `IMPLEMENTED BUT UNVERIFIED` evidence status. The panel keeps indexer candidates separate from official competition qualification.
+
 ## Phase III status — 2026-11-26
 
 - Added a production-registry holder fork probe. It proves an observed holder passes both issuer and executor identity checks. The probe deliberately uses an empty signature and therefore does not claim successful authorization or execution.

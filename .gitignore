@@ -3,6 +3,7 @@ node_modules/
 contracts/build/
 apps/web/arena-artifacts.json
 apps/web/arena-worker.js
+apps/web/adoption-status.json
 out/
 cache/
 dist/

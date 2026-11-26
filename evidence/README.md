@@ -8,4 +8,6 @@ Store reproducible build logs, test output, deployment receipts, verified source
 
 `public-arena-deployment.json` records the published Pages commit, successful CI/Pages runs, HTTP 200 assets, in-browser demo scenario results and current dependency audit result. Arena outcomes remain local simulations and are not mainnet activity.
 
+When a reviewed Guard deployment exists, `adoption-activity.json` may contain the public output of the BNB activity indexer. The build validates its chain, Guard, registry, block range, and candidate-address count before exposing summary counts in the public Adoption panel. Before deployment or without a matching scan, the panel reports `BLOCKED` and unknown counts.
+
 No production deployment or qualifying-user evidence exists yet.

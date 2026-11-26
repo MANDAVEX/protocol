@@ -1,4 +1,6 @@
 const { Contract, Interface, JsonRpcProvider, getAddress, id } = require('ethers');
+const fs = require('node:fs');
+const path = require('node:path');
 const { AGENT_ID_BSC } = require('../packages/sdk/index.cjs');
 
 const GUARD_EVENTS = new Interface(['event ActionAuthorized(bytes32 indexed mandateId,address indexed issuer,address indexed executor,bytes32 action,bytes32 payloadHash,uint32 useNumber,uint256 counterAfter)']);
@@ -117,7 +119,9 @@ async function main(args = process.argv.slice(2)) {
   const provider = new JsonRpcProvider(rpc);
   try {
     const report = await scanActivity({ provider, guardAddress: opts.guard, registryAddress: opts.registry || AGENT_ID_BSC, deploymentBlock: Number(opts['deployment-block']), toBlock: opts['to-block'] === undefined ? undefined : Number(opts['to-block']), pageSize: Number(opts['page-size'] || 2000), confirmations: Number(opts.confirmations || 15), chainId: opts.chain === undefined ? undefined : Number(opts.chain), windowStart: Number(opts['window-start'] || DEFAULT_START), windowEnd: Number(opts['window-end'] || DEFAULT_END) });
-    process.stdout.write(`${JSON.stringify(report, null, 2)}\n`);
+    const output = `${JSON.stringify(report, null, 2)}\n`;
+    if (opts.output) fs.writeFileSync(path.resolve(opts.output), output);
+    else process.stdout.write(output);
   } finally { provider.destroy(); }
 }
 

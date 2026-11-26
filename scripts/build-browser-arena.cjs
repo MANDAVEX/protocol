@@ -2,6 +2,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const esbuild = require('esbuild');
 const { contract, mock } = require('./compile-contract.cjs');
+const { generate: generateAdoptionStatus } = require('./build-adoption-status.cjs');
 
 const root = path.resolve(__dirname, '..');
 const web = path.join(root, 'apps/web');
@@ -10,6 +11,7 @@ const artifacts = {
   mock: { abi: mock.abi, bytecode: mock.evm.bytecode.object },
 };
 fs.writeFileSync(path.join(web, 'arena-artifacts.json'), JSON.stringify(artifacts));
+generateAdoptionStatus();
 esbuild.buildSync({
   entryPoints: [path.join(web, 'arena-worker.mjs')],
   bundle: true,
