@@ -2,11 +2,19 @@
 
 Updated: 2026-11-26 02:00 UTC.
 
+## Operation Titanium progress — 2026-11-26
+
+- Implemented fixed permission-bound task submission and review acceptance in the Guard, Arena, SDK and preparation-only CLI, including unsigned revoke calldata. Local EVM tests verify exact-hash acceptance, distinct reviewer enforcement, and rejection of self-review, wrong owner, duplicate tasks and malformed payloads.
+- Added eight focused indexer tests covering canonical receipts, reorg rejection, failed receipts, direct versus relayed senders, address de-duplication, competition-window edges, historical identity state, RPC failures and adaptive pagination.
+- Added six Genesis handler checks for configuration failure, malformed/invalid/duplicate registrations, hashed rate-limit keys, six-per-window throttling, block-pinned identity lookup and D1/RPC failure fallback.
+- Final full test run: 40 passed, 0 failed, including the refactored Guard validation path. Contract compile succeeded at 5,634-byte creation bytecode; browser build succeeded; Slither reports three known observations with a compiler-wrapper warning; authorized npm audit found 0 vulnerabilities. Local changes remain uncommitted and unpublished pending browser visual review and final diff review. Shared Cloudflare D1 is still not configured. Browser account sign-in is pending the founder's action on Google's profile/email sharing consent screen.
+- npm audit and public BNB RPC checks are explicitly authorized; the default environment cannot reach those endpoints, so run only where network access is available. No deployment transaction or spend is authorized.
+
 ## Last completed
 
 - Recovered and preserved the transferred MANDAVEX workspace.
-- Published the reviewed browser Arena release on GitHub `main` at product commit `f61525b`.
-- `npm test`: 21 passed, 0 failed. Latest BSC fork block: 135760977.
+- Published the reviewed browser Arena release on GitHub `main` at product commit `f61525b`; documentation evidence follow-up is at public checkpoint `9762d33`.
+- Previous release `npm test`: 21 passed, 0 failed. Titanium workspace test run: 40 passed, 0 failed; latest BSC fork block: 135770097.
 - `npm run compile:contracts`, `npm run build:web`, and `npm audit --audit-level=low` succeeded; audit found 0 vulnerabilities.
 - GitHub CI and Pages passed. Live build metadata and page assets match the release. Public browser smoke passed both a valid local mandate and a payload-tampering rejection.
 - Recorded current acceptance gates and deployment evidence in `ACCEPTANCE_GATES.md` and `evidence/public-arena-deployment.json`.
@@ -20,7 +28,7 @@ Updated: 2026-11-26 02:00 UTC.
 
 ## Exact next engineering task
 
-Add focused tests around `scripts/index-activity.cjs` for candidate classification, time windows, canonical receipts, and local-fixture handling. Keep candidate counts separate from official qualifying-user determinations. Then run the full suite and publish only after review.
+Complete final verification for the task collaboration, indexer and Genesis test changes. After review, publish the reviewed code release. Resume Cloudflare setup after the founder completes the sign-in consent. Then configure D1, validate data retention/privacy and test persistence across isolated clients. Do not claim Genesis activation until the public service and persistence have been independently verified.
 
 ## Dependent work
 

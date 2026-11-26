@@ -48,7 +48,8 @@ export async function onRequestPost({ request, env }) {
     if (!(await rateLimit(request, env))) return json({ status: 'BLOCKED', message: 'Too many attempts. Try again later.' }, 429);
     const raw = await request.text();
     if (new TextEncoder().encode(raw).byteLength > 4096) return json({ status: 'INVALID', message: 'Registration details are too large.' }, 413);
-    const input = JSON.parse(raw);
+    let input;
+    try { input = JSON.parse(raw); } catch { return json({ status: 'INVALID', message: 'Registration details must be valid JSON.' }, 400); }
     if (!input || !['community', 'agent'].includes(input.program)) return json({ status: 'INVALID', message: 'Choose a supported registration program.' }, 400);
     const id = crypto.randomUUID();
     const createdAt = new Date().toISOString();
@@ -99,7 +100,11 @@ export async function onRequestGet({ request, env }) {
   if (!env.DB) return json({ status: 'BLOCKED', message: 'Shared registration is not configured.' }, 503);
   const id = new URL(request.url).searchParams.get('id') || '';
   if (!/^[0-9a-f-]{36}$/i.test(id)) return json({ status: 'INVALID', message: 'A valid registration reference is required.' }, 400);
-  const row = await env.DB.prepare('SELECT id, program, wallet_address, x_handle, identity_status, identity_block, review_status, created_at FROM genesis_registrations WHERE id = ?').bind(id).first();
-  if (!row) return json({ status: 'NOT_FOUND' }, 404);
-  return json({ status: 'REGISTERED', registration: row });
+  try {
+    const row = await env.DB.prepare('SELECT id, program, wallet_address, x_handle, identity_status, identity_block, review_status, created_at FROM genesis_registrations WHERE id = ?').bind(id).first();
+    if (!row) return json({ status: 'NOT_FOUND' }, 404);
+    return json({ status: 'REGISTERED', registration: row });
+  } catch {
+    return json({ status: 'BLOCKED', message: 'Registration status is temporarily unavailable.' }, 503);
+  }
 }

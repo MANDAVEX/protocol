@@ -29,6 +29,22 @@ The tests include Hardhat local-EVM execution and adversarial checks, a determin
 
 The `MandavexGuard` source is experimental and has no deployment address. Read [the contract source](../contracts/src/MandavexGuard.sol), [security limitations](../SECURITY.md), and SDK helper documentation before integrating. There is no production API endpoint or MCP server yet.
 
+### Permission-bound task review
+
+The Guard supports two fixed task transitions in addition to the original counter fixture: `MANDAVEX_TASK_SUBMIT_V1` records an owner, contributor and non-zero artifact hash; `MANDAVEX_TASK_ACCEPT_V1` lets a distinct reviewer accept only that exact hash. Both actions use the same EIP-712 mandate checks, execution-time Agent ID reads, expiry, nonce, use limit and revocation as the fixture action. No arbitrary contract calls or asset movement are enabled. The Guard stores only task metadata and a hash; the artifact itself remains off-chain, so reviewers must independently verify its contents before authorizing acceptance.
+
+Prepare typed data for a submission or acceptance with the CLI (preparation only; it never signs or sends):
+
+```sh
+node scripts/mandate-cli.cjs prepare --issuer OWNER --executor CONTRIBUTOR --guard GUARD --chain 31337 --nonce 1 --expiry UNIX_SECONDS --action submit-task --task-id 0xTASK_ID_64_HEX --artifact-hash 0xARTIFACT_HASH_64_HEX
+```
+
+For acceptance use `--executor REVIEWER --action accept-task` and the same task ID and artifact hash. The owner signs the typed data; the named executor reviews it and decides whether to submit the encoded call. On BNB mainnet use `--chain 56` only with a reviewed deployment address. User wallets must show the complete transaction and request explicit confirmation. Production execution remains unavailable until deployment and review.
+
+The CLI also prints an unsigned `revoke(mandate)` calldata template for the same mandate. Only the issuer can successfully call it; the executor must inspect the target Guard and function before signing. The local Arena's “Revoked mandate” scenario demonstrates the revocation path using only a fresh fixture.
+
+The public browser Arena runs the same compiled Solidity source and performs submission, self-review rejection, artifact-substitution rejection and acceptance using mock identities in a local in-memory EVM. Its receipts and hashes are local simulation evidence and are not public-chain transactions.
+
 See [Agentic Wallet workflow](AGENTIC_WALLET_WORKFLOW.md) for the official documented Developer Mode EIP-712 signing and contract-call flow. It is a candidate integration only; no wallet session was connected or exercised.
 
 ## Adoption evidence indexer (pre-deployment)

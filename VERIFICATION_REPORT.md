@@ -1,6 +1,16 @@
 # VERIFICATION_REPORT
 
-Updated 2026-11-26. Public checkpoint: `f61525b873a4009e494a19a3bd85e326ab411cf1`. This report distinguishes local demo evidence from production protocol evidence.
+Updated 2026-11-26. Public checkpoint before local Titanium changes: `9762d334aa670323eb1061e6e9bb2cc8e1372221`. This report distinguishes local demo evidence from production protocol evidence.
+
+## Operation Titanium local verification
+
+The current unpublished workspace implements a fixed task collaboration workflow in the Guard: the owner authorizes a contributor to submit a task and artifact hash; a distinct Agent ID executor can accept only the exact hash under a separate owner-signed mandate. Invalid payload lengths, duplicate submissions, wrong owners, self-review and artifact substitution are rejected. The browser Arena runs the compiled Solidity in its local VM and records both transitions. Hashes refer to a demonstration artifact; no artifact bytes are uploaded or checked by the contract.
+
+`npm test` completed with 40 passed and 0 failed, including two BNB mainnet-state fork probes at block 135770097. The holder probe passes only the two Agent ID gates and then stops at an intentionally invalid signature; it is not a real-holder signed execution. `npm run compile:contracts` succeeded with solc 0.8.39, optimizer 200, Paris EVM, and 5,634-byte creation bytecode. `npm run build:web` succeeded with a 767 KiB browser worker. The authorized `npm audit --audit-level=low` found 0 vulnerabilities. Local-only results and boundaries are recorded in `evidence/operation-titanium-local.json`.
+
+Slither 0.11.6 now produces three observations across 102 detectors: timestamp comparison, signature-parsing assembly, and registry staticcall. An initial complexity score of 12 was removed by extracting the same ordered checks into internal validation helpers. The bundled compiler wrapper still reports a Python path warning and returns exit code 1, so this is PARTIALLY IMPLEMENTED static-analysis evidence. Details are in `evidence/slither-titanium-report.txt`; this is not an audit.
+
+The changes are not yet published. The public Pages app still reflects checkpoint `9762d33`. Genesis handler tests use a mock D1 binding; the shared Cloudflare database remains unconfigured pending account sign-in. The indexer tests use mocked providers; no deployed Guard has been scanned. No mainnet Guard deployment, public-chain task interaction, qualifying participation, or spend is claimed.
 
 ## VERIFIED
 - Official Binance hackathon announcement states the Agent ID contract address, `balanceOf` eligibility rule, submission window, eligibility and scoring.

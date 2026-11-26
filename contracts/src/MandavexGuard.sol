@@ -29,9 +29,17 @@ contract MandavexGuard {
     mapping(bytes32 => uint32) public uses;
     uint256 public demoCounter;
 
+    bytes32 public constant TASK_SUBMIT_ACTION = keccak256("MANDAVEX_TASK_SUBMIT_V1");
+    bytes32 public constant TASK_ACCEPT_ACTION = keccak256("MANDAVEX_TASK_ACCEPT_V1");
+    enum TaskStatus { None, Submitted, Accepted }
+    struct Task { address owner; address contributor; address reviewer; bytes32 artifactHash; TaskStatus status; }
+    mapping(bytes32 => Task) public tasks;
+
     event ActionAuthorized(bytes32 indexed mandateId, address indexed issuer, address indexed executor,
         bytes32 action, bytes32 payloadHash, uint32 useNumber, uint256 counterAfter);
     event MandateRevoked(bytes32 indexed mandateId, address indexed issuer);
+    event TaskTransition(bytes32 indexed taskId, TaskStatus status, address indexed owner,
+        address contributor, address reviewer, bytes32 artifactHash, bytes32 indexed mandateId);
 
     error InvalidIdentity();
     error InvalidMandate();
@@ -62,22 +70,67 @@ contract MandavexGuard {
     }
 
     function execute(Mandate calldata m, bytes calldata payload, bytes calldata signature) external returns (bytes32 id) {
-        if (msg.sender != m.executor || m.issuer == address(0) || m.executor == address(0)) revert Unauthorized();
-        if (!_hasAgentId(m.issuer) || !_hasAgentId(m.executor)) revert InvalidIdentity();
-        if (m.maxUses == 0 || m.expiry <= m.validAfter) revert InvalidMandate();
-        if (block.timestamp < m.validAfter || block.timestamp > m.expiry) revert InvalidTime();
-        if (m.action != keccak256("MANDAVEX_DEMO_INCREMENT_V1") || m.payloadHash != keccak256(payload)) revert ScopeMismatch();
-        id = mandateId(m);
-        bytes32 reserved = nonceMandate[m.issuer][m.nonce];
-        if (reserved != bytes32(0) && reserved != id) revert Replay();
-        if (revoked[id]) revert Revoked();
-        if (_recover(_digest(_structHash(m)), signature) != m.issuer) revert InvalidSignature();
+        id = _validateMandate(m, payload, signature);
         uint32 nextUse = uses[id] + 1;
         if (nextUse > m.maxUses) revert UseLimit();
         nonceMandate[m.issuer][m.nonce] = id;
         uses[id] = nextUse;
         uint256 updated = ++demoCounter;
         emit ActionAuthorized(id, m.issuer, m.executor, m.action, m.payloadHash, nextUse, updated);
+        if (m.action == TASK_SUBMIT_ACTION) _submitTask(m, payload, id);
+        else if (m.action == TASK_ACCEPT_ACTION) _acceptTask(m, payload, id);
+    }
+
+    function _validateMandate(Mandate calldata m, bytes calldata payload, bytes calldata signature) private view returns (bytes32 id) {
+        _checkExecutor(m);
+        _checkIdentity(m);
+        _checkWindow(m);
+        _checkScope(m, payload);
+        id = mandateId(m);
+        bytes32 reserved = nonceMandate[m.issuer][m.nonce];
+        if (reserved != bytes32(0) && reserved != id) revert Replay();
+        if (revoked[id]) revert Revoked();
+        if (_recover(_digest(_structHash(m)), signature) != m.issuer) revert InvalidSignature();
+    }
+
+    function _checkExecutor(Mandate calldata m) private view {
+        if (msg.sender != m.executor || m.issuer == address(0) || m.executor == address(0)) revert Unauthorized();
+    }
+
+    function _checkIdentity(Mandate calldata m) private view {
+        if (!_hasAgentId(m.issuer) || !_hasAgentId(m.executor)) revert InvalidIdentity();
+    }
+
+    function _checkWindow(Mandate calldata m) private view {
+        if (m.maxUses == 0 || m.expiry <= m.validAfter) revert InvalidMandate();
+        if (block.timestamp < m.validAfter || block.timestamp > m.expiry) revert InvalidTime();
+    }
+
+    function _checkScope(Mandate calldata m, bytes calldata payload) private pure {
+        if (m.payloadHash != keccak256(payload) || !_supportedAction(m.action)) revert ScopeMismatch();
+    }
+
+    function _supportedAction(bytes32 action) private pure returns (bool) {
+        return action == keccak256("MANDAVEX_DEMO_INCREMENT_V1") || action == TASK_SUBMIT_ACTION || action == TASK_ACCEPT_ACTION;
+    }
+
+    function _submitTask(Mandate calldata m, bytes calldata payload, bytes32 id) private {
+        if (payload.length != 64) revert ScopeMismatch();
+        (bytes32 taskId, bytes32 artifactHash) = abi.decode(payload, (bytes32, bytes32));
+        if (taskId == bytes32(0) || artifactHash == bytes32(0) || m.issuer == m.executor || tasks[taskId].status != TaskStatus.None) revert ScopeMismatch();
+        tasks[taskId] = Task(m.issuer, m.executor, address(0), artifactHash, TaskStatus.Submitted);
+        emit TaskTransition(taskId, TaskStatus.Submitted, m.issuer, m.executor, address(0), artifactHash, id);
+    }
+
+    function _acceptTask(Mandate calldata m, bytes calldata payload, bytes32 id) private {
+        if (payload.length != 64) revert ScopeMismatch();
+        (bytes32 taskId, bytes32 artifactHash) = abi.decode(payload, (bytes32, bytes32));
+        Task storage task = tasks[taskId];
+        if (taskId == bytes32(0) || artifactHash == bytes32(0) || task.status != TaskStatus.Submitted ||
+            task.owner != m.issuer || task.contributor == m.executor || task.artifactHash != artifactHash) revert ScopeMismatch();
+        task.reviewer = m.executor;
+        task.status = TaskStatus.Accepted;
+        emit TaskTransition(taskId, TaskStatus.Accepted, task.owner, task.contributor, m.executor, artifactHash, id);
     }
 
     function _hasAgentId(address account) private view returns (bool) {

@@ -2,7 +2,7 @@ const { before, after, test } = require('node:test');
 const assert = require('node:assert/strict');
 const { spawn } = require('node:child_process');
 const path = require('node:path');
-const { JsonRpcProvider, ContractFactory, Signature, concat, keccak256, toBeHex, toUtf8Bytes } = require('ethers');
+const { JsonRpcProvider, ContractFactory, Signature, AbiCoder, concat, keccak256, toBeHex, toUtf8Bytes } = require('ethers');
 const { contract, mock } = require('../scripts/compile-contract.cjs');
 const { verifyReceipt } = require('../packages/sdk/index.cjs');
 const { verifyInteraction } = require('../scripts/index-activity.cjs');
@@ -40,6 +40,8 @@ const types = { Mandate: [
 ] };
 const action = keccak256(toUtf8Bytes('MANDAVEX_DEMO_INCREMENT_V1'));
 const payload = toUtf8Bytes('add one to my test counter');
+const TASK_SUBMIT = keccak256(toUtf8Bytes('MANDAVEX_TASK_SUBMIT_V1'));
+const TASK_ACCEPT = keccak256(toUtf8Bytes('MANDAVEX_TASK_ACCEPT_V1'));
 let nonceSequence = 1n;
 
 async function expectCustomError(promise, signature) {
@@ -59,6 +61,7 @@ async function fixture() {
   await registry.waitForDeployment();
   await (await registry.setBalance(await issuer.getAddress(), 1)).wait();
   await (await registry.setBalance(await executor.getAddress(), 1)).wait();
+  await (await registry.setBalance(await outsider.getAddress(), 1)).wait();
   const guard = await new ContractFactory(contract.abi, contract.evm.bytecode.object, issuer).deploy(await registry.getAddress());
   await guard.waitForDeployment();
   return { issuer, executor, outsider, registry, guard };
@@ -106,6 +109,50 @@ test('valid EIP-712 mandate executes, consumes bounded use, emits proof, and rev
   await (await ctx.guard.revoke(mandate)).wait();
   assert.equal(await ctx.guard.revoked(await ctx.guard.mandateId(mandate)), true);
   await expectCustomError(ctx.guard.connect(ctx.executor).execute.staticCall(mandate, payload, signature), 'Revoked()');
+});
+
+test('permission-bound task handoff stores submission and accepts the exact artifact by a distinct reviewer', async () => {
+  const ctx = await fixture();
+  const abi = AbiCoder.defaultAbiCoder();
+  const taskId = keccak256(toUtf8Bytes('task:market-research-brief'));
+  const artifactHash = keccak256(toUtf8Bytes('sha256:reviewed-research-artifact-v1'));
+  const taskPayload = abi.encode(['bytes32', 'bytes32'], [taskId, artifactHash]);
+  const submit = await signedMandate(ctx, { action: TASK_SUBMIT, payloadHash: keccak256(taskPayload) });
+  const submittedReceipt = await (await ctx.guard.connect(ctx.executor).execute(submit.mandate, taskPayload, submit.signature)).wait();
+  const submitted = await ctx.guard.tasks(taskId);
+  assert.equal(submitted.status, 1n);
+  assert.equal(submitted.owner, submit.mandate.issuer);
+  assert.equal(submitted.contributor, submit.mandate.executor);
+  assert.equal(submitted.artifactHash, artifactHash);
+  assert.ok(submittedReceipt.logs.some((log) => { try { return ctx.guard.interface.parseLog(log)?.name === 'TaskTransition'; } catch { return false; } }));
+
+  const domain = { name: 'MANDAVEX', version: '1', chainId: 31337, verifyingContract: await ctx.guard.getAddress() };
+  const reviewMandate = { ...submit.mandate, executor: await ctx.outsider.getAddress(), action: TASK_ACCEPT,
+    payloadHash: keccak256(taskPayload), nonce: nonceSequence++ };
+  const selfReview = { ...reviewMandate, executor: submit.mandate.executor, nonce: nonceSequence++ };
+  const selfSignature = await ctx.issuer.signTypedData(domain, types, selfReview);
+  await expectCustomError(ctx.guard.connect(ctx.executor).execute.staticCall(selfReview, taskPayload, selfSignature), 'ScopeMismatch()');
+  const alteredArtifact = abi.encode(['bytes32', 'bytes32'], [taskId, keccak256(toUtf8Bytes('different artifact'))]);
+  const altered = { ...reviewMandate, nonce: nonceSequence++, payloadHash: keccak256(alteredArtifact) };
+  const alteredSignature = await ctx.issuer.signTypedData(domain, types, altered);
+  await expectCustomError(ctx.guard.connect(ctx.outsider).execute.staticCall(altered, alteredArtifact, alteredSignature), 'ScopeMismatch()');
+  const wrongOwner = { ...reviewMandate, issuer: await ctx.executor.getAddress(), nonce: nonceSequence++ };
+  const wrongOwnerSignature = await ctx.executor.signTypedData(domain, types, wrongOwner);
+  await expectCustomError(ctx.guard.connect(ctx.outsider).execute.staticCall(wrongOwner, taskPayload, wrongOwnerSignature), 'ScopeMismatch()');
+  const duplicate = await signedMandate(ctx, { action: TASK_SUBMIT, payloadHash: keccak256(taskPayload) });
+  await expectCustomError(ctx.guard.connect(ctx.executor).execute.staticCall(duplicate.mandate, taskPayload, duplicate.signature), 'ScopeMismatch()');
+  const truncatedPayload = taskPayload.slice(0, -2);
+  const truncated = await signedMandate(ctx, { action: TASK_SUBMIT, payloadHash: keccak256(truncatedPayload) });
+  await expectCustomError(ctx.guard.connect(ctx.executor).execute.staticCall(truncated.mandate, truncatedPayload, truncated.signature), 'ScopeMismatch()');
+
+  const reviewSignature = await ctx.issuer.signTypedData(domain, types, reviewMandate);
+  const acceptedReceipt = await (await ctx.guard.connect(ctx.outsider).execute(reviewMandate, taskPayload, reviewSignature)).wait();
+  const accepted = await ctx.guard.tasks(taskId);
+  assert.equal(accepted.status, 2n);
+  assert.equal(accepted.reviewer, reviewMandate.executor);
+  assert.equal(accepted.artifactHash, artifactHash);
+  assert.ok(acceptedReceipt.logs.some((log) => { try { return ctx.guard.interface.parseLog(log)?.args.status === 2n; } catch { return false; } }));
+  assert.equal((await ctx.guard.tasks(taskId)).artifactHash, artifactHash);
 });
 
 test('unknown Agent ID executor fails closed and leaves state unchanged', async () => {

@@ -1,0 +1,56 @@
+{
+  "evidenceStatus": "IMPLEMENTED BUT UNVERIFIED",
+  "recordedAt": "2026-11-26",
+  "scope": "Unpublished local changes for permission-bound task collaboration and supporting services",
+  "contract": {
+    "status": "compiled and exercised locally",
+    "solc": "0.8.39",
+    "optimizerRuns": 200,
+    "evmVersion": "paris",
+    "creationBytecodeBytes": 5634,
+    "actions": [
+      "MANDAVEX_TASK_SUBMIT_V1",
+      "MANDAVEX_TASK_ACCEPT_V1"
+    ],
+    "workflow": "Owner-authorized task submission, exact artifact-hash acceptance, distinct reviewer, task transition events",
+    "securityBoundary": "Same Agent ID, EIP-712 signature, scope, expiry, nonce, revocation and bounded-use checks as the existing Guard",
+    "assetCustodyOrArbitraryCalls": false
+  },
+  "tests": {
+    "command": "npm test",
+    "passed": 40,
+    "failed": 0,
+    "forkBlock": 135770097,
+    "coverageHighlights": [
+      "Local Guard lifecycle and authorization invariants",
+      "Task submission, exact-hash review, self-review and wrong-owner rejection, duplicate task rejection, malformed task payload rejection",
+      "Browser Arena task collaboration with mock identities and ephemeral keys",
+      "Indexer receipts, canonical block checks, pagination, duplicate addresses, sender checks, time boundaries and RPC failure behavior",
+      "Indexer reorganization and historical identity-state rejection",
+      "Genesis input, duplicate, rate limit, identity lookup and failure behavior",
+      "Genesis malformed JSON plus D1 read/write error responses",
+      "Preparation-only CLI execution/revocation calldata and SDK task payload helpers"
+    ]
+  },
+  "dependencyAudit": {
+    "command": "npm audit --audit-level=low",
+    "result": "0 vulnerabilities",
+    "authorization": "User authorized package name/version metadata transfer to npm"
+  },
+  "staticAnalysis": {
+    "evidenceStatus": "PARTIALLY IMPLEMENTED",
+    "tool": "Slither 0.11.6",
+    "detectors": 102,
+    "observations": ["timestamp comparisons", "signature parsing assembly", "fail-closed Agent ID staticcall"],
+    "limitation": "Refactoring removed the initial execute cyclomatic-complexity 12 finding. The bundled compiler wrapper still emitted a Python path warning and the command exited 1 despite producing detector results. This is partial static-analysis evidence, not an audit.",
+    "report": "evidence/slither-titanium-report.txt"
+  },
+  "productionEvidence": {
+    "mainnetDeployment": false,
+    "publicChainTaskInteraction": false,
+    "realHolderSignedExecution": false,
+    "genesisD1Configured": false,
+    "qualifyingInteractions": 0,
+    "statement": "Local simulations, fixture identities, mocked service tests and fork identity reads do not establish public-chain execution or official competition participation."
+  }
+}

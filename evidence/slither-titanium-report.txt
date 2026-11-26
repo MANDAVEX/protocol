@@ -1,0 +1,13 @@
+MANDAVEX Operation Titanium static analysis
+Run date: 2026-11-26 (Africa/Algiers)
+Scope: contracts/src/MandavexGuard.sol only
+Tool: Slither 0.11.6, 102 detectors
+Command: .venv-audit/Scripts/slither.exe contracts/src/MandavexGuard.sol --solc .venv-audit/Scripts/solc.exe
+Result: The initial run found four observations, including execute complexity 12. The execution checks were split into internal validation steps and Slither was rerun. The latest run reports three observations; complexity 12 is no longer reported. The command still returned exit code 1 and the bundled solc wrapper printed "Failed to find real location of ... python.exe" while Slither continued and reported analysis output. Treat this as partial static evidence, not a clean toolchain verification.
+
+Observations:
+1. Timestamp comparisons in execute() for validAfter and expiry. These are required time bounds; block timestamps have normal validator tolerance.
+2. Inline assembly in _recover() to read ECDSA signature components.
+3. Low-level staticcall in _hasAgentId() to query the external Agent ID registry; failures and malformed responses revert closed.
+
+No independent audit is implied. The three remaining observations are known protocol mechanisms; the compiler-wrapper issue remains a toolchain limitation. The dependency report and runtime tests do not prove contract security.

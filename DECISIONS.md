@@ -30,6 +30,12 @@ The user approved publishing the static preview and its Pages workflow permissio
 - The public Arena runs the compiled Guard in a browser-only EVM with ephemeral keys and mock identities. It is explicitly labeled as demo execution and submits no public-chain transaction.
 - CI and Pages succeeded; the deployed build metadata matches the commit. A live browser run showed successful scoped execution and payload-tampering rejection. These results do not verify production deployment, Agent ID holder signing, or adoption.
 
+## 2026-11-26 — Add fixed permission-bound task collaboration
+
+- Extend the existing immutable Guard with only two new action selectors: task submission and exact-hash review acceptance. Both share the existing EIP-712, execution-time Agent ID, expiry, nonce, use-limit, revocation and signature checks; the Guard still makes no arbitrary external calls and holds no assets.
+- Store task owner, contributor, reviewer, state and artifact hash on the Guard. Acceptance requires the owner's fresh mandate, an Agent ID executor distinct from the contributor, and the submitted artifact hash. Artifact bytes remain off-chain and must be independently checked by the reviewer.
+- Keep the browser workflow on the compiled Solidity implementation, using local mock identities and ephemeral demo keys. This workflow is simulation evidence only; production wallet transactions remain disabled until a deployment is reviewed.
+
 ## Phase III status — 2026-11-26
 
 - Added a production-registry holder fork probe. It proves an observed holder passes both issuer and executor identity checks. The probe deliberately uses an empty signature and therefore does not claim successful authorization or execution.

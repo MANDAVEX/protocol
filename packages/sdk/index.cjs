@@ -1,7 +1,9 @@
-const { Interface, keccak256, toUtf8Bytes, getBytes } = require('ethers');
+const { AbiCoder, Interface, keccak256, toUtf8Bytes, getBytes } = require('ethers');
 
 const AGENT_ID_BSC = '0x60b9262456de011f7d15a54cdd8c48baaa8b022f';
 const ACTION_INCREMENT = keccak256(toUtf8Bytes('MANDAVEX_DEMO_INCREMENT_V1'));
+const ACTION_TASK_SUBMIT = keccak256(toUtf8Bytes('MANDAVEX_TASK_SUBMIT_V1'));
+const ACTION_TASK_ACCEPT = keccak256(toUtf8Bytes('MANDAVEX_TASK_ACCEPT_V1'));
 const DOMAIN_NAME = 'MANDAVEX';
 const DOMAIN_VERSION = '1';
 const types = {
@@ -18,6 +20,7 @@ const types = {
 };
 const guardInterface = new Interface([
   'function execute((address issuer,address executor,bytes32 action,bytes32 payloadHash,uint64 validAfter,uint64 expiry,uint256 nonce,uint32 maxUses) mandate,bytes payload,bytes signature) returns (bytes32)',
+  'function revoke((address issuer,address executor,bytes32 action,bytes32 payloadHash,uint64 validAfter,uint64 expiry,uint256 nonce,uint32 maxUses) mandate)',
   'event ActionAuthorized(bytes32 indexed mandateId,address indexed issuer,address indexed executor,bytes32 action,bytes32 payloadHash,uint32 useNumber,uint256 counterAfter)',
 ]);
 
@@ -28,6 +31,17 @@ function typedMandate(mandate, chainId, verifyingContract) {
 
 function encodeExecute(mandate, payload, signature) {
   return guardInterface.encodeFunctionData('execute', [mandate, getBytes(payload), signature]);
+}
+
+function encodeRevoke(mandate) {
+  return guardInterface.encodeFunctionData('revoke', [mandate]);
+}
+
+function encodeTaskPayload(taskId, artifactHash) {
+  if (!/^0x[0-9a-fA-F]{64}$/.test(taskId) || !/^0x[0-9a-fA-F]{64}$/.test(artifactHash) || /^0x0{64}$/i.test(taskId) || /^0x0{64}$/i.test(artifactHash)) {
+    throw new TypeError('taskId and artifactHash must be non-zero bytes32 values');
+  }
+  return AbiCoder.defaultAbiCoder().encode(['bytes32', 'bytes32'], [taskId, artifactHash]);
 }
 
 function verifyReceipt(receipt, expected = {}, guardAddress) {
@@ -46,4 +60,4 @@ function verifyReceipt(receipt, expected = {}, guardAddress) {
   return { verified: true, transactionHash: receipt.hash, blockNumber: receipt.blockNumber, mandateId: event.args.mandateId, issuer: event.args.issuer, executor: event.args.executor, counterAfter: event.args.counterAfter };
 }
 
-module.exports = { AGENT_ID_BSC, ACTION_INCREMENT, typedMandate, encodeExecute, verifyReceipt };
+module.exports = { AGENT_ID_BSC, ACTION_INCREMENT, ACTION_TASK_SUBMIT, ACTION_TASK_ACCEPT, encodeTaskPayload, typedMandate, encodeExecute, encodeRevoke, verifyReceipt };

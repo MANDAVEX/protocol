@@ -8,7 +8,7 @@ test('contract compiles to non-empty deployable bytecode', () => {
 
 test('ABI exposes the intended execution and revocation surface', () => {
   const names = contract.abi.filter((entry) => entry.type === 'function').map((entry) => entry.name);
-  for (const name of ['execute', 'revoke', 'mandateId', 'agentId', 'demoCounter', 'nonceMandate', 'revoked', 'uses']) assert.ok(names.includes(name), `${name} missing`);
+  for (const name of ['execute', 'revoke', 'mandateId', 'agentId', 'demoCounter', 'nonceMandate', 'revoked', 'uses', 'tasks', 'TASK_SUBMIT_ACTION', 'TASK_ACCEPT_ACTION']) assert.ok(names.includes(name), `${name} missing`);
   assert.equal(names.includes('upgradeTo'), false);
   assert.equal(names.includes('withdraw'), false);
 });
@@ -16,7 +16,9 @@ test('ABI exposes the intended execution and revocation surface', () => {
 test('source uses execution-time fail-closed identity reads and a narrow deterministic action', () => {
   assert.match(source, /agentId\.staticcall/);
   assert.match(source, /if \(!ok \|\| result\.length < 32\) revert InvalidIdentity\(\)/);
-  assert.match(source, /m\.action != keccak256\("MANDAVEX_DEMO_INCREMENT_V1"\)/);
+  assert.match(source, /_supportedAction\(m\.action\)/);
+  assert.match(source, /action == keccak256\("MANDAVEX_DEMO_INCREMENT_V1"\).*TASK_SUBMIT_ACTION.*TASK_ACCEPT_ACTION/s);
+  assert.match(source, /task\.contributor == m\.executor \|\| task\.artifactHash != artifactHash/);
   assert.match(source, /m\.payloadHash != keccak256\(payload\)/);
   assert.match(source, /if \(msg\.sender != m\.executor/);
 });

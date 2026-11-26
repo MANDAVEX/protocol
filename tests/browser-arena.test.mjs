@@ -8,6 +8,17 @@ const artifacts = {
   mock: { abi: build.mock.abi, bytecode: build.mock.evm.bytecode.object },
 };
 
+test('browser EVM completes permission-bound task submission, review, and tamper rejection', async () => {
+  const arena = await createBrowserArena(artifacts);
+  const result = await arena.runScenario('collaboration');
+  assert.equal(result.result, 'PASS');
+  assert.equal(result.task.status, 'Accepted');
+  assert.notEqual(result.task.contributor.toLowerCase(), result.task.reviewer.toLowerCase());
+  assert.equal(result.receipts.length, 2);
+  assert.ok(result.receipts.every((receipt) => receipt.logs.some((log) => log.name === 'TaskTransition')));
+  assert.deepEqual(result.rejectedAttempts.map((attempt) => attempt.reason), ['ScopeMismatch', 'ScopeMismatch']);
+});
+
 test('browser EVM runs a signed mandate and rejects adversarial cases without state change', async () => {
   const arena = await createBrowserArena(artifacts);
   const valid = await arena.runScenario('valid');
