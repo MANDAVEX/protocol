@@ -1,17 +1,18 @@
 # MANDAVEX SDK (early)
 
-This minimal helper builds EIP-712 typed data for the initial Guard. It does not send transactions or claim a deployment exists.
+This early, local SDK exposes TypeScript declarations for EIP-712 data, execute-call encoding and receipt verification. The runtime remains experimental. It does not submit transactions or imply a production deployment.
 
 ```js
-const { typedMandate } = require('./packages/sdk');
+const { typedMandate, encodeExecute, verifyReceipt } = require('./packages/sdk');
 
 const typedData = typedMandate({
   issuer, executor, action, payloadHash,
   validAfter, expiry, nonce, maxUses: 1,
 }, 56, guardAddress);
 
-// Pass `typedData` to a wallet's standard typed-data signing method.
-// The issuer must review the exact mandate and retain transaction control.
+// Sign typedData with an explicitly authorized wallet; display and review all fields first.
+const calldata = encodeExecute(typedData.message, payloadBytes, signature);
+const checked = verifyReceipt(receipt, { issuer, executor, action, payloadHash }, guardAddress);
 ```
 
 See `contracts/src/MandavexGuard.sol` for the exact field types and checks. The helper remains experimental until a real-wallet signature is tested against a local EVM deployment.

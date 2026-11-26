@@ -1,5 +1,11 @@
 # MANDAVEX
 
+## Local Security Arena
+
+Run `npm run arena:local` and open `http://127.0.0.1:4173`. This starts an isolated Hardhat EVM on loopback, deploys fresh controlled test fixtures per scenario, and serves the interactive Arena. The valid scenario signs an EIP-712 mandate with a local test key, executes the compiled Guard, and displays the parsed `ActionAuthorized` event, transaction hash, block and resulting counter. Adversarial scenarios use separate fresh fixtures.
+
+The open-versus-protected comparison is a small deterministic local baseline, not a broad performance benchmark. The synthetic prompt-injection case exercises a fixed rule and invokes no AI model. Browser Passport and Genesis entries are stored only in local storage on that device; they are not credentials, remote registrations, or qualifying interactions. Nothing in local mode is public-chain activity. Stop the process with Ctrl+C.
+
 **The Authority Layer for Autonomous Intelligence.**
 
 Identity is not authority. Autonomy is not permission.

@@ -20,5 +20,6 @@ jobs:
       - run: npm run compile:contracts
       - run: npm audit --audit-level=low
       - run: node --check apps/web/main.js
+      - run: node --check scripts/arena-server.cjs
       - run: node --check scripts/estimate-bsc-deployment.cjs
       - run: node --check scripts/prepare-bsc-deployment.cjs

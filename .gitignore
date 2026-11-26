@@ -1,6 +1,8 @@
 node_modules/
 .venv-audit/
 contracts/build/
+apps/web/arena-artifacts.json
+apps/web/arena-worker.js
 out/
 cache/
 dist/

@@ -30,3 +30,9 @@ The tests include Hardhat local-EVM execution and adversarial checks, a determin
 The `MandavexGuard` source is experimental and has no deployment address. Read [the contract source](../contracts/src/MandavexGuard.sol), [security limitations](../SECURITY.md), and SDK helper documentation before integrating. There is no production API endpoint or MCP server yet.
 
 See [Agentic Wallet workflow](AGENTIC_WALLET_WORKFLOW.md) for the official documented Developer Mode EIP-712 signing and contract-call flow. It is a candidate integration only; no wallet session was connected or exercised.
+
+## Adoption evidence indexer (pre-deployment)
+
+`npm run index:activity -- --guard ADDRESS --deployment-block N --chain 56` scans `ActionAuthorized` logs in confirmed block pages, checks canonical receipt block hashes, retries RPC failures, validates successful Guard-targeted receipts, and reads Agent ID `balanceOf` for the transaction sender, mandate issuer, and executor at the receipt block. Inputs also support `--registry`, `--rpc-url`, `--page-size`, `--confirmations`, `--window-start`, and `--window-end`. Keep RPC credentials in environment variables; never put keys in commands or evidence.
+
+The report separates `candidateCount` from `qualifyingCount`, which remains zero pending organizer rules and genuine deployed-chain evidence. Relayer/delegated senders are excluded pending organizer confirmation. Historical identity reads are post-block state, not exact transaction pre-state; archive RPC failure is reported and never treated as eligibility. A local receipt integration test validates parsing and non-mainnet exclusion on chain 31337 only; it cannot create competition participation.

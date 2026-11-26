@@ -1,4 +1,4 @@
-const { keccak256, toUtf8Bytes } = require('ethers');
+const { Interface, keccak256, toUtf8Bytes, getBytes } = require('ethers');
 
 const AGENT_ID_BSC = '0x60b9262456de011f7d15a54cdd8c48baaa8b022f';
 const ACTION_INCREMENT = keccak256(toUtf8Bytes('MANDAVEX_DEMO_INCREMENT_V1'));
@@ -16,10 +16,34 @@ const types = {
     { name: 'maxUses', type: 'uint32' },
   ],
 };
+const guardInterface = new Interface([
+  'function execute((address issuer,address executor,bytes32 action,bytes32 payloadHash,uint64 validAfter,uint64 expiry,uint256 nonce,uint32 maxUses) mandate,bytes payload,bytes signature) returns (bytes32)',
+  'event ActionAuthorized(bytes32 indexed mandateId,address indexed issuer,address indexed executor,bytes32 action,bytes32 payloadHash,uint32 useNumber,uint256 counterAfter)',
+]);
 
 function typedMandate(mandate, chainId, verifyingContract) {
   if (!Number.isSafeInteger(Number(chainId)) || !verifyingContract) throw new TypeError('chainId and verifyingContract are required');
   return { domain: { name: DOMAIN_NAME, version: DOMAIN_VERSION, chainId: Number(chainId), verifyingContract }, types, primaryType: 'Mandate', message: mandate };
 }
 
-module.exports = { AGENT_ID_BSC, ACTION_INCREMENT, typedMandate };
+function encodeExecute(mandate, payload, signature) {
+  return guardInterface.encodeFunctionData('execute', [mandate, getBytes(payload), signature]);
+}
+
+function verifyReceipt(receipt, expected = {}, guardAddress) {
+  if (!receipt || receipt.status !== 1) return { verified: false, reason: 'transaction_not_successful' };
+  if (guardAddress && receipt.to?.toLowerCase() !== guardAddress.toLowerCase()) return { verified: false, reason: 'wrong_guard_address' };
+  let event = null;
+  for (const log of receipt.logs || []) {
+    if (guardAddress && log.address?.toLowerCase() !== guardAddress.toLowerCase()) continue;
+    try { const parsed = guardInterface.parseLog(log); if (parsed?.name === 'ActionAuthorized') { event = parsed; break; } } catch { /* unrelated log */ }
+  }
+  if (!event) return { verified: false, reason: 'authorization_event_missing' };
+  for (const key of ['issuer', 'executor', 'action', 'payloadHash', 'mandateId']) {
+    if (expected[key] !== undefined && String(event.args[key]).toLowerCase() !== String(expected[key]).toLowerCase()) return { verified: false, reason: `event_${key}_mismatch` };
+  }
+  if (expected.counterAfter !== undefined && BigInt(event.args.counterAfter) !== BigInt(expected.counterAfter)) return { verified: false, reason: 'event_counter_mismatch' };
+  return { verified: true, transactionHash: receipt.hash, blockNumber: receipt.blockNumber, mandateId: event.args.mandateId, issuer: event.args.issuer, executor: event.args.executor, counterAfter: event.args.counterAfter };
+}
+
+module.exports = { AGENT_ID_BSC, ACTION_INCREMENT, typedMandate, encodeExecute, verifyReceipt };

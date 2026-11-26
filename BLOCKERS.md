@@ -5,16 +5,19 @@
 - Reviewed source, CI and Pages deployment are published on GitHub `main`; static preview is live at `https://mandavex.github.io/protocol/`.
 - The live site is only a wallet-connected identity preview, with no Guard address or transaction workflow. Domain ownership/availability is unverified.
 - No authorized deployment wallet or approved gas budget supplied; no mainnet transaction.
-- No local source changes remain unpushed.
+- The local Arena app, wallet workflow skill and updated evidence/status files are uncommitted workspace changes pending review.
 - `mandavex.io` resolves no DNS records; an RDAP lookup returned no domain record but availability and ownership are not verified.
 - 30 genuine qualifying Agent ID holder interactions remain mandatory and unachieved.
 - No longer blocked on deadline verification: official submission closes 2026-12-09 08:00 UTC.
-- No end-to-end protocol frontend, independent security audit, authorized wallet review/signature, or competition submission. The available BNB fee is a point-in-time RPC estimate only.
+- The public site has not yet been updated with the local Arena interface; publish only after review. The local Arena does not provide a deployed browser mandate lifecycle. No independent security audit, authorized holder signature, production transaction, or competition submission exists. The available BNB fee is a point-in-time RPC estimate only.
 
 ## Phase III blockers (2026-11-26)
+
+- Current lockfile dependency audit is unverified. The automatic reviewer rejected `npm audit` because it would transmit dependency metadata to npm. Do not bypass this decision.
 
 - The holder-positive fork probe has no valid holder EIP-712 signature. Successful guarded execution and official wallet integration remain unverified.
 - Binance's documented external signing flow requires the holder to enable Developer Mode, inspect message/call previews and confirm any required app prompts. No `baw` CLI or connected Agentic Wallet session is present in this environment.
 - The contract remains experimental and undeployed. Mainnet launch requires independent security review and an authorized human to approve deployment costs/transaction.
 - Latest Pages failure was traced to an artifact lookup race: upload succeeded and the artifact was visible, while deploy found none. The two-job upload/deploy fix succeeded on commit `465c3884bb9881dea28a33c19807c527a4dc390c`; see `evidence/pages-artifact-investigation.md`.
-- No Genesis credentials, public adoption index, verified qualifying participants, interactive Arena or competition submission exist.
+- No Genesis credentials, public adoption index, or verified qualifying participants exist. The interactive Arena currently runs only on local controlled fixtures; no competition submission exists.
+- The local official-wallet skill is preparatory only; it stops before signing while no reviewed Guard deployment exists.

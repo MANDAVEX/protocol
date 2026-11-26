@@ -1,0 +1,9 @@
+name = "mandavex-protocol-preview"
+compatibility_date = "2026-11-26"
+pages_build_output_dir = "./apps/web"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "mandavex-genesis"
+database_id = "REQUIRES_CLOUDFLARE_DATABASE_CREATION"
+migrations_dir = "infra/cloudflare/migrations"

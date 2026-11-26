@@ -2,7 +2,7 @@
 
 ## Immediate positive-path wallet action
 
-The next successful authorization probe needs a real signature from an Agent ID holder. The test can use a holder's own Agentic Wallet address as both issuer and executor. Never use another person's address or impersonate an address outside the local fork.
+The next successful authorization probe needs a real signature from an Agent ID holder. The test can use a holder's own Agentic Wallet address as both issuer and executor. Never use another person's address or impersonate an address outside the local fork. A guarded workflow instruction artifact is at `skills/mandavex-agentic-wallet/SKILL.md`.
 
 When the wallet exercise is staged, the holder must:
 
@@ -11,7 +11,7 @@ When the wallet exercise is staged, the holder must:
 3. Inspect and approve the contract-call preview. This executes only the `MandavexGuard.execute` action. Do not proceed if the Guard address, action, payload, fee or simulation differs from the review.
 4. Confirm any additional Binance App prompt. The test runs against a local BSC fork and is not mainnet activity.
 
-The official CLI is not installed or authenticated in this workspace, and the fork signing harness is not yet staged; do not run or sign anything yet. No signature or secret is requested in chat.
+The official CLI is not installed or authenticated in this workspace, the Guard has no production address, and the fork signing harness is not yet staged; stop before signing or transacting. No signature or secret is requested in chat. Do not use Binance web QR pairing; if the owner later chooses to authenticate, use the official mobile-app flow and retain all wallet confirmations.
 
 ## Mainnet launch (not ready for approval)
 

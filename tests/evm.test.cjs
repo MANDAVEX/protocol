@@ -4,6 +4,8 @@ const { spawn } = require('node:child_process');
 const path = require('node:path');
 const { JsonRpcProvider, ContractFactory, Signature, concat, keccak256, toBeHex, toUtf8Bytes } = require('ethers');
 const { contract, mock } = require('../scripts/compile-contract.cjs');
+const { verifyReceipt } = require('../packages/sdk/index.cjs');
+const { verifyInteraction } = require('../scripts/index-activity.cjs');
 
 const port = 18545;
 const url = `http://127.0.0.1:${port}`;
@@ -91,6 +93,15 @@ test('valid EIP-712 mandate executes, consumes bounded use, emits proof, and rev
   const parsed = receipt.logs.map((log) => { try { return ctx.guard.interface.parseLog(log); } catch { return null; } }).find((log) => log?.name === 'ActionAuthorized');
   assert.ok(parsed, 'ActionAuthorized receipt event missing');
   assert.equal(parsed.args.counterAfter, 1n);
+  const sdkReceipt = verifyReceipt(receipt, { issuer: mandate.issuer, executor: mandate.executor, action: mandate.action, payloadHash: mandate.payloadHash, mandateId: await ctx.guard.mandateId(mandate), counterAfter: 1 }, await ctx.guard.getAddress());
+  assert.equal(sdkReceipt.verified, true, 'SDK receipt verifier must accept the real local Guard event');
+  const localInteraction = await verifyInteraction(provider, receipt, {
+    guardAddress: await ctx.guard.getAddress(), registryAddress: await ctx.registry.getAddress(), chainId: 31337,
+    windowStart: 0, windowEnd: Number.MAX_SAFE_INTEGER,
+  });
+  assert.equal(localInteraction.verified, true, 'indexer verifies the canonical local Guard receipt');
+  assert.equal(localInteraction.counted, false, 'local fixture interaction never qualifies as mainnet activity');
+  assert.equal(localInteraction.reason, 'fixture_or_non_mainnet_activity');
   await expectCustomError(ctx.guard.connect(ctx.executor).execute(mandate, payload, signature), 'UseLimit()');
   await (await ctx.guard.revoke(mandate)).wait();
   assert.equal(await ctx.guard.revoked(await ctx.guard.mandateId(mandate)), true);

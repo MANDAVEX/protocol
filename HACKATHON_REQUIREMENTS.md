@@ -2,7 +2,7 @@
 
 | Official requirement | Component | Verification/evidence | Status | Remaining work |
 |---|---|---|---|---|
-| Public live product | apps/web | Public URL and smoke test | NOT IMPLEMENTED | Build and host |
+| Public live product | apps/web | Public URL and smoke test | PARTIALLY IMPLEMENTED | Existing static preview is live; publish and smoke-test the current browser Arena build after review; production workflow remains unavailable |
 | BNB Chain contracts | contracts | tx receipts/deployment manifest | NOT IMPLEMENTED | Build, review, authorized deploy |
 | Public open source + BscScan verification | contracts | public source and verified explorer | NOT IMPLEMENTED | Publish/deploy/verify |
 | Core Agent ID integration | guard | execution-time balanceOf checks, source/test | IMPLEMENTED BUT UNVERIFIED | Confirm ABI and execute runtime tests |
