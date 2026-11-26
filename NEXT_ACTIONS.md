@@ -7,13 +7,13 @@ Updated: 2026-11-26 02:00 UTC.
 - Implemented fixed permission-bound task submission and review acceptance in the Guard, Arena, SDK and preparation-only CLI, including unsigned revoke calldata. Local EVM tests verify exact-hash acceptance, distinct reviewer enforcement, and rejection of self-review, wrong owner, duplicate tasks and malformed payloads.
 - Added eight focused indexer tests covering canonical receipts, reorg rejection, failed receipts, direct versus relayed senders, address de-duplication, competition-window edges, historical identity state, RPC failures and adaptive pagination.
 - Added six Genesis handler checks for configuration failure, malformed/invalid/duplicate registrations, hashed rate-limit keys, six-per-window throttling, block-pinned identity lookup and D1/RPC failure fallback.
-- Final full test run: 40 passed, 0 failed, including the refactored Guard validation path. Contract compile succeeded at 5,634-byte creation bytecode; browser build succeeded; Slither reports three known observations with a compiler-wrapper warning; authorized npm audit found 0 vulnerabilities. Local changes remain uncommitted and unpublished pending browser visual review and final diff review. Shared Cloudflare D1 is still not configured. Browser account sign-in is pending the founder's action on Google's profile/email sharing consent screen.
+- Final full test run: 40 passed, 0 failed, including the refactored Guard validation path. Contract compile succeeded at 5,634-byte creation bytecode; browser build succeeded; Slither reports three known observations with a compiler-wrapper warning; authorized npm audit found 0 vulnerabilities. Release `467cbbf` is committed and public; CI/Pages pass and deployed metadata/assets match. Interactive browser smoke for the new workflow remains pending. Shared Cloudflare D1 is not configured. Browser account sign-in is pending the founder's action on Google's profile/email sharing consent screen.
 - npm audit and public BNB RPC checks are explicitly authorized; the default environment cannot reach those endpoints, so run only where network access is available. No deployment transaction or spend is authorized.
 
 ## Last completed
 
 - Recovered and preserved the transferred MANDAVEX workspace.
-- Published the reviewed browser Arena release on GitHub `main` at product commit `f61525b`; documentation evidence follow-up is at public checkpoint `9762d33`.
+- Published the initial browser Arena release at `f61525b`, documentation checkpoint `9762d33`, and Titanium task collaboration at `467cbbf` on GitHub `main` and Pages.
 - Previous release `npm test`: 21 passed, 0 failed. Titanium workspace test run: 40 passed, 0 failed; latest BSC fork block: 135770097.
 - `npm run compile:contracts`, `npm run build:web`, and `npm audit --audit-level=low` succeeded; audit found 0 vulnerabilities.
 - GitHub CI and Pages passed. Live build metadata and page assets match the release. Public browser smoke passed both a valid local mandate and a payload-tampering rejection.
@@ -28,7 +28,7 @@ Updated: 2026-11-26 02:00 UTC.
 
 ## Exact next engineering task
 
-Complete final verification for the task collaboration, indexer and Genesis test changes. After review, publish the reviewed code release. Resume Cloudflare setup after the founder completes the sign-in consent. Then configure D1, validate data retention/privacy and test persistence across isolated clients. Do not claim Genesis activation until the public service and persistence have been independently verified.
+Resume the handed-off browser session after the founder completes Google's sign-in consent, then verify the public collaboration workflow on desktop and mobile. Continue to free D1 setup and Genesis deployment, keeping the service inactive until persistence, privacy, rate limits, duplicate behavior and failure paths are verified against real Cloudflare D1. Do not claim Genesis activation until that end-to-end check succeeds.
 
 ## Dependent work
 

@@ -1,6 +1,6 @@
 # VERIFICATION_REPORT
 
-Updated 2026-11-26. Public checkpoint before local Titanium changes: `9762d334aa670323eb1061e6e9bb2cc8e1372221`. This report distinguishes local demo evidence from production protocol evidence.
+Updated 2026-11-26. Current public checkpoint: `467cbbfb15c87c4fe31bd2367c1f28c4a12c203b`. This report distinguishes local demo evidence from production protocol evidence.
 
 ## Operation Titanium local verification
 
@@ -10,7 +10,7 @@ The current unpublished workspace implements a fixed task collaboration workflow
 
 Slither 0.11.6 now produces three observations across 102 detectors: timestamp comparison, signature-parsing assembly, and registry staticcall. An initial complexity score of 12 was removed by extracting the same ordered checks into internal validation helpers. The bundled compiler wrapper still reports a Python path warning and returns exit code 1, so this is PARTIALLY IMPLEMENTED static-analysis evidence. Details are in `evidence/slither-titanium-report.txt`; this is not an audit.
 
-The changes are not yet published. The public Pages app still reflects checkpoint `9762d33`. Genesis handler tests use a mock D1 binding; the shared Cloudflare database remains unconfigured pending account sign-in. The indexer tests use mocked providers; no deployed Guard has been scanned. No mainnet Guard deployment, public-chain task interaction, qualifying participation, or spend is claimed.
+The release is published at `467cbbf`. CI and Pages both succeeded; public build metadata matches the commit, and `main.js`, `arena-worker.js`, and `arena-artifacts.json` returned HTTP 200. An interactive browser run of the new collaboration button is not yet verified. Genesis handler tests use mock D1; shared persistence remains unconfigured pending founder completion of Cloudflare OAuth consent. The indexer tests use mocked providers; no deployed Guard has been scanned. No mainnet Guard deployment, public-chain task interaction, qualifying participation, or spend is claimed.
 
 ## VERIFIED
 - Official Binance hackathon announcement states the Agent ID contract address, `balanceOf` eligibility rule, submission window, eligibility and scoring.

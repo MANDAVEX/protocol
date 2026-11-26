@@ -1,7 +1,7 @@
 {
   "evidenceStatus": "IMPLEMENTED BUT UNVERIFIED",
   "recordedAt": "2026-11-26",
-  "scope": "Unpublished local changes for permission-bound task collaboration and supporting services",
+  "scope": "Local verification and public Pages deployment of the permission-bound task collaboration release",
   "contract": {
     "status": "compiled and exercised locally",
     "solc": "0.8.39",
@@ -44,6 +44,18 @@
     "observations": ["timestamp comparisons", "signature parsing assembly", "fail-closed Agent ID staticcall"],
     "limitation": "Refactoring removed the initial execute cyclomatic-complexity 12 finding. The bundled compiler wrapper still emitted a Python path warning and the command exited 1 despite producing detector results. This is partial static-analysis evidence, not an audit.",
     "report": "evidence/slither-titanium-report.txt"
+  },
+  "publication": {
+    "commit": "467cbbfb15c87c4fe31bd2367c1f28c4a12c203b",
+    "ci": "success",
+    "ciRun": "https://github.com/MANDAVEX/protocol/actions/runs/45745571263",
+    "pages": "success",
+    "pagesRun": "https://github.com/MANDAVEX/protocol/actions/runs/45745571301",
+    "deployedBuildMetadataMatches": true,
+    "mainScriptHttp": 200,
+    "browserWorkerHttp": 200,
+    "compiledArtifactsHttp": 200,
+    "interactiveBrowserSmoke": "NOT VERIFIED for this release"
   },
   "productionEvidence": {
     "mainnetDeployment": false,
