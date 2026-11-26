@@ -1,38 +1,43 @@
 # Next Actions
 
-Updated: 2026-11-26 01:46 UTC.
+Updated: 2026-11-26 02:00 UTC.
 
 ## Last completed
 
-- Recovered the `main` workspace at base commit `487f6cf`; retained all existing work and created a local checkpoint.
-- Ran `npm test`: 21 passed, 0 failed. Latest BSC fork block was 135760977.
-- Ran `npm run compile:contracts` and `npm run build:web`; both succeeded. Browser worker built at 765 KiB.
-- Reviewed the Arena execution boundary and local-only disclosures. The existing loopback Arena server passed valid and altered-payload smoke scenarios; no public transaction was sent.
-- Confirmed official hackathon deadline from the current Binance announcement: 2026-12-09 08:00 UTC.
+- Recovered and preserved the transferred MANDAVEX workspace.
+- Published the reviewed browser Arena release on GitHub `main` at product commit `f61525b`.
+- `npm test`: 21 passed, 0 failed. Latest BSC fork block: 135760977.
+- `npm run compile:contracts`, `npm run build:web`, and `npm audit --audit-level=low` succeeded; audit found 0 vulnerabilities.
+- GitHub CI and Pages passed. Live build metadata and page assets match the release. Public browser smoke passed both a valid local mandate and a payload-tampering rejection.
+- Recorded current acceptance gates and deployment evidence in `ACCEPTANCE_GATES.md` and `evidence/public-arena-deployment.json`.
 
 ## Current state
 
-- Local browser Arena worker and web UI are implemented; tests cover its EVM scenarios. The current build is not on the public site.
-- Public GitHub Pages preview remains the prior reviewed build. The local checkpoint has not been published.
-- Mainnet Guard is undeployed. There is no production transaction, independently audited contract, genuine holder-signed execution, or qualifying adoption count.
-- Genesis Cloudflare function and D1 schema are preparatory only; `wrangler.toml` contains a placeholder database ID.
-- Current lockfile's `npm audit` status is unknown. Automatic review rejected transmitting dependency metadata to npm; do not route around that decision.
+- The public site has a real browser-side EVM Arena. It uses ephemeral keys and mock identity, makes no RPC call, and sends no public-chain transaction.
+- Mainnet Guard remains undeployed, unaudited, and without a production address. There is no successful real-holder signature or qualifying production interaction.
+- Shared Genesis is preparatory only: Cloudflare D1 has not been created or connected, and no signup service is active.
+- The submission deadline is 2026-12-09 08:00 UTC. Eligibility requires a live product and at least 30 distinct Agent ID addresses interacting with participating contracts during the submission period.
 
-## Exact next task
+## Exact next engineering task
 
-1. Complete review of the browser build, SDK, Pages workflow and activity indexer; run the actual browser Worker smoke test.
-2. Resolve the dependency audit gate. Automatic review rejected npm audit because it transmits lockfile dependency metadata to npm; obtain explicit authorization before retrying, and do not route around the rejection.
-3. After the audit gate is resolved, publish the static Arena build through the existing GitHub Pages workflow; verify its build identifier and asset responses.
-4. Stage shared Genesis only after configuring its D1 service, privacy/retention behavior and rate-limit secret; keep it disabled until then.
-5. Continue production wallet positive path, independent security review, and mainnet readiness. Keep all deployment signing and spending behind the owner's wallet confirmation.
+Add focused tests around `scripts/index-activity.cjs` for candidate classification, time windows, canonical receipts, and local-fixture handling. Keep candidate counts separate from official qualifying-user determinations. Then run the full suite and publish only after review.
+
+## Dependent work
+
+- Stage a genuine holder-positive authorization workflow when an authorized Agent ID holder can review the exact mandate and provide their own wallet confirmation. Do not request or handle their private key.
+- Obtain an independent security review before production deployment.
+- Configure Genesis only after an authorized Cloudflare database, privacy/retention policy, and rate limiting are reviewed.
+- After a production Guard is deployed, recruit genuine Agent ID holders and collect verifiable interactions. Do not manufacture activity.
 
 ## Tests to rerun after code changes
 
 - `npm test`
 - `npm run compile:contracts`
 - `npm run build:web`
-- CI JavaScript syntax checks and dependency audit (audit currently awaits permitted metadata egress).
+- `npm audit --audit-level=low`
 
-## Uncommitted workspace
+The dependency audit's metadata transfer to npm was explicitly approved for this project. No deployment spend has occurred.
 
-`git status --short` is clean at the local checkpoint. The commit includes the browser Arena, SDK, indexer, prepared Genesis endpoint, package/deployment workflows and evidence/state updates. No secrets were intentionally added. Remote publication remains pending audit authorization.
+## Checkpoint
+
+The published product commit is `f61525b873a4009e494a19a3bd85e326ab411cf1`. Keep future work recoverable in Git and update this file, `PROJECT_STATE.md`, and evidence after each material milestone.

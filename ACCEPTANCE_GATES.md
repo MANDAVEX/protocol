@@ -4,11 +4,11 @@ Updated: 2026-11-26. Statuses describe the current local workspace, not a future
 
 | Gate | Status | Verification / evidence | Limitation and next action | Human action |
 |---|---|---|---|---|
-| S01 Existing workspace recovered | VERIFIED | Git workspace inspected; branch `main`, base `487f6cf`, modified/untracked files preserved | No destructive Git action used | None |
-| S02 Complete build reproducible | IMPLEMENTED BUT UNVERIFIED | `npm run compile:contracts` and `npm run build:web` succeeded | Clean dependency install not repeated against this lockfile | None |
-| S03 All current tests executed | VERIFIED | `npm test`: 21 passed, 0 failed; `evidence/runtime-test-report.txt` | Audit is separate and blocked; tests are not a security audit | None |
-| S04 Functional browser EVM Arena | IMPLEMENTED BUT UNVERIFIED | Browser Arena EVM test covers signed execution, adversarial scenarios and comparison | Core/worker tests pass; deployed browser UI still needs a public smoke test | None |
-| S05 Public runtime demonstration | PARTIALLY IMPLEMENTED | Existing static preview at `https://mandavex.github.io/protocol/` | Latest Arena build is local and uncommitted; review, publish and smoke-test | None |
+| S01 Existing workspace recovered | VERIFIED | Git workspace inspected; branch `main`, public checkpoint `f61525b`, prior work preserved | No destructive Git action used | None |
+| S02 Complete build reproducible | VERIFIED | CI performed `npm ci`; compile and Pages build succeeded for `f61525b` | No independent clean-room rebuild outside GitHub Actions | None |
+| S03 All current tests executed | VERIFIED | `npm test`: 21 passed, 0 failed; CI succeeded; see `evidence/runtime-test-report.txt` | Tests are not a security audit | None |
+| S04 Functional browser EVM Arena | VERIFIED | Public browser run passed valid mandate and payload-tampering rejection; SDK/worker test suite passed | Demo fixtures only; no public chain activity | None |
+| S05 Public runtime demonstration | VERIFIED | Public Pages build at `https://mandavex.github.io/protocol/`; matching metadata and assets returned HTTP 200 | Runtime is a local EVM demo, not the deployed protocol | None |
 | S06 Complete signed local authorization lifecycle | VERIFIED | Local EVM test covers signature, execution, event, nonce/use, revocation and expiry | Controlled fixtures only | None |
 | S07 Official Agent ID fork integration | PARTIALLY IMPLEMENTED | BSC fork at block 135760977 loads official registry and checks non-holder plus observed holder identity gates | Holder probe stops at invalid signature; no holder-signed successful execution | Holder must provide an exact approved signature using their own wallet to advance positive path |
 | S08 Supported production wallet workflow | PARTIALLY IMPLEMENTED | Official flow researched; guarded instructions in `skills/mandavex-agentic-wallet/SKILL.md` | No connected wallet, deployed Guard or end-to-end signing | Holder must approve all wallet prompts after reviewed deployment |
@@ -17,7 +17,7 @@ Updated: 2026-11-26. Statuses describe the current local workspace, not a future
 | S11 Tested adoption indexer | PARTIALLY IMPLEMENTED | Indexer source verifies ActionAuthorized receipt and identity at a block; fixture is excluded | No deployed Guard scan or official qualification determination | None before deployment |
 | S12 SDK and integration example | PARTIALLY IMPLEMENTED | SDK typed-data, calldata and receipt checks are covered by tests | Not published as an installable package; no production integration | None |
 | S13 Security-critical invariants | PARTIALLY IMPLEMENTED | 21-test suite includes malformed payloads, replay, expiry, identity, scope and signature checks | No independent audit; additional invariant and race review needed | Independent security reviewer required before production deployment |
-| S14 Public deployment reflects latest reviewed commit | NOT IMPLEMENTED | Public preview reflects prior reviewed commit | Current changes need source review, then publication and remote smoke check | None; publishing is already authorized after review |
+| S14 Public deployment reflects latest reviewed commit | VERIFIED | CI and Pages succeeded on `f61525b`; live `build-info.json` matches; browser Arena smoke passed | No production Guard deployment | None |
 | S15 Reproducible mainnet release candidate | PARTIALLY IMPLEMENTED | Immutable Guard, compile and unsigned preparation scripts exist | No independent audit, holder positive path, wallet end-to-end or final deployment review | None until release review is complete |
 | S16 Exact deployment funding requirement | PARTIALLY IMPLEMENTED | Prior read-only point-in-time estimate in `evidence/bsc-mainnet-deployment-estimate.json` | Fee estimate is volatile and not a guaranteed current total | Recheck immediately before human approval |
 | S17 Actual mainnet deployment | BLOCKED | No transaction or contract address | Requires security review, a deployment wallet and gas | Owner must authorize and confirm the exact wallet transaction |

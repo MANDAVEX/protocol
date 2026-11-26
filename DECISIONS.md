@@ -24,6 +24,12 @@ The user approved publishing the static preview and its Pages workflow permissio
 - The browser Arena demonstrates local authorization outcomes without a service, RPC, connected wallet, or real funds. UI and evidence identify this as a demo; it does not count as Agent ID adoption or production execution.
 - Genesis shared registration stays unconfigured until the Cloudflare D1 binding and privacy/retention behavior are reviewed. A placeholder database identifier is not deployable service configuration.
 
+## 2026-11-26 — Publish the browser Arena as a disclosed demo
+
+- Published reviewed commit `f61525b` to the existing public repository and GitHub Pages workflow after local tests, compile/build, dependency audit and source review passed.
+- The public Arena runs the compiled Guard in a browser-only EVM with ephemeral keys and mock identities. It is explicitly labeled as demo execution and submits no public-chain transaction.
+- CI and Pages succeeded; the deployed build metadata matches the commit. A live browser run showed successful scoped execution and payload-tampering rejection. These results do not verify production deployment, Agent ID holder signing, or adoption.
+
 ## Phase III status — 2026-11-26
 
 - Added a production-registry holder fork probe. It proves an observed holder passes both issuer and executor identity checks. The probe deliberately uses an empty signature and therefore does not claim successful authorization or execution.

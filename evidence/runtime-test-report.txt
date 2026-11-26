@@ -1,6 +1,6 @@
 MANDAVEX current workspace verification
 Timestamp: 2026-11-26 (UTC; latest isolated suite run)
-Workspace base: main at 487f6cf; local changes were uncommitted
+Published workspace commit: main at f61525b873a4009e494a19a3bd85e326ab411cf1
 
 Command: npm test
 Result: 21 passed, 0 failed, 0 skipped
@@ -16,6 +16,6 @@ Build commands:
 - npm run compile:contracts — succeeded; solc 0.8.39; Guard creation bytecode 3,992 bytes.
 - npm run build:web — succeeded; browser worker 765 KiB.
 - Loopback server smoke: `/api/scenarios` reported local-only chain 31337 and all 13 scenarios. `POST /api/run/valid` returned PASS with a local receipt; `POST /api/run/payload-tampering` returned PASS, rejected the altered payload and left counter at 0. The existing project Arena process was identified before use and left running.
-- Loopback server smoke: `/api/scenarios` reported local-only chain 31337 and all 13 scenarios. `POST /api/run/valid` returned PASS with a local receipt; `POST /api/run/payload-tampering` returned PASS, rejected the altered payload and left counter at 0. The existing project Arena process was identified before use and left running.
-
-Dependency audit: not verified for current lockfile. Network lookup was unavailable in the restricted run. An elevated retry was rejected by automatic review because it would transmit dependency metadata to npm. No workaround was attempted.
+- Public browser smoke: valid signed demo passed and emitted `ActionAuthorized` (counter 0→1); payload tampering rejected with `ScopeMismatch` (counter 0→0). Both ran in an in-browser local EVM, without RPC or public-chain activity.
+- CI and Pages workflows completed successfully at commit `f61525b873a4009e494a19a3bd85e326ab411cf1`; live `build-info.json` matched that commit and page, script, worker and compiled artifacts returned HTTP 200. Detailed record: `evidence/public-arena-deployment.json`.
+- `npm audit --audit-level=low` — found 0 vulnerabilities in the current dependency lockfile on 2026-11-26.

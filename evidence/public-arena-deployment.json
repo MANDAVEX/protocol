@@ -1,0 +1,58 @@
+{
+  "evidenceStatus": "VERIFIED",
+  "observedAt": "2026-11-26T02:00:00Z",
+  "commit": "f61525b873a4009e494a19a3bd85e326ab411cf1",
+  "site": "https://mandavex.github.io/protocol/",
+  "buildInfo": {
+    "url": "https://mandavex.github.io/protocol/build-info.json",
+    "status": 200,
+    "commit": "f61525b873a4009e494a19a3bd85e326ab411cf1",
+    "builtAt": "2026-11-26T01:59:17Z"
+  },
+  "workflowRuns": {
+    "ci": {
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/MANDAVEX/protocol/actions/runs/45739353053"
+    },
+    "pages": {
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/MANDAVEX/protocol/actions/runs/45739353102"
+    }
+  },
+  "assets": [
+    { "path": "/", "status": 200, "bytes": 563 },
+    { "path": "/build-info.json", "status": 200, "bytes": 87 },
+    { "path": "/main.js", "status": 200, "bytes": 21007 },
+    { "path": "/arena-worker.js", "status": 200, "bytes": 782864 },
+    { "path": "/arena-artifacts.json", "status": 200, "bytes": 13808 }
+  ],
+  "publicBrowserSmoke": {
+    "scenarioCount": 13,
+    "validMandate": {
+      "result": "PASS",
+      "signatureRecovered": true,
+      "stateBefore": 0,
+      "stateAfter": 1,
+      "event": "ActionAuthorized",
+      "environment": "browser-local EVM, chain 31337, ephemeral demo keys, mock Agent ID"
+    },
+    "payloadTampering": {
+      "result": "PASS",
+      "rejection": "ScopeMismatch",
+      "stateBefore": 0,
+      "stateAfter": 0,
+      "receipt": null
+    }
+  },
+  "dependencyAudit": {
+    "command": "npm audit --audit-level=low",
+    "result": "found 0 vulnerabilities"
+  },
+  "limitations": [
+    "Arena outcomes are local simulations, not BNB Chain transactions or Agent ID holder activity.",
+    "No production Guard address, wallet signing, or transaction submission is configured.",
+    "This is CI and deployment evidence, not an independent security audit."
+  ]
+}

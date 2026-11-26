@@ -6,4 +6,6 @@ Store reproducible build logs, test output, deployment receipts, verified source
 
 `local-arena-run.json` records actual isolated local EVM outcomes and a controlled open-versus-protected comparison. It is fixture evidence only and does not count as BNB Chain participation.
 
+`public-arena-deployment.json` records the published Pages commit, successful CI/Pages runs, HTTP 200 assets, in-browser demo scenario results and current dependency audit result. Arena outcomes remain local simulations and are not mainnet activity.
+
 No production deployment or qualifying-user evidence exists yet.

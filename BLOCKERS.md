@@ -3,17 +3,16 @@
 - Foundry is unavailable; Hardhat EVM tests are in place. Contract coverage is not measured.
 - Verified Agent ID source, complete ABI, upgrade mechanism and holder-positive-path test remain unverified.
 - Reviewed source, CI and Pages deployment are published on GitHub `main`; static preview is live at `https://mandavex.github.io/protocol/`.
-- The live site is only a wallet-connected identity preview, with no Guard address or transaction workflow. Domain ownership/availability is unverified.
+- The live site now includes the browser EVM Arena and wallet-connected identity preview, but has no Guard address or production transaction workflow. Domain ownership/availability is unverified.
 - No authorized deployment wallet or approved gas budget supplied; no mainnet transaction.
-- The local Arena app, wallet workflow skill and updated evidence/status files are uncommitted workspace changes pending review.
+- The reviewed browser Arena, SDK, activity indexer and updated evidence are published on GitHub `main` and Pages. Genesis runtime configuration and production workflow remain unfinished.
 - `mandavex.io` resolves no DNS records; an RDAP lookup returned no domain record but availability and ownership are not verified.
 - 30 genuine qualifying Agent ID holder interactions remain mandatory and unachieved.
 - No longer blocked on deadline verification: official submission closes 2026-12-09 08:00 UTC.
-- The public site has not yet been updated with the local Arena interface; publish only after review. The local Arena does not provide a deployed browser mandate lifecycle. No independent security audit, authorized holder signature, production transaction, or competition submission exists. The available BNB fee is a point-in-time RPC estimate only.
+- The public site now includes the local browser Arena, but no production Guard address or browser mandate lifecycle exists. No independent security audit, authorized holder signature, production transaction, or competition submission exists. The available BNB fee is a point-in-time RPC estimate only.
 
 ## Phase III blockers (2026-11-26)
 
-- Current lockfile dependency audit is unverified. The automatic reviewer rejected `npm audit` because it would transmit dependency metadata to npm. Do not bypass this decision.
 
 - The holder-positive fork probe has no valid holder EIP-712 signature. Successful guarded execution and official wallet integration remain unverified.
 - Binance's documented external signing flow requires the holder to enable Developer Mode, inspect message/call previews and confirm any required app prompts. No `baw` CLI or connected Agentic Wallet session is present in this environment.
