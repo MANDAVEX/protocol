@@ -1,0 +1,46 @@
+{
+  "evidenceStatus": "IMPLEMENTED BUT UNVERIFIED",
+  "releaseStatus": "RELEASE_CANDIDATE · NOT APPROVED FOR MAINNET",
+  "sourceCommit": "62613993a0754a3479029760aea951281d29c0f0",
+  "sourceTreeCleanBeforePackaging": true,
+  "sourcePath": "contracts/src/MandavexGuard.sol",
+  "sourceSha256": "72455f719e52e49f9343e61ff3056ed1795a4417fea910004c8a710bd609c106",
+  "compiler": "0.8.39+commit.ce47f2c8.Emscripten.clang",
+  "compilerSettings": {
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    },
+    "evmVersion": "paris"
+  },
+  "network": "BNB Smart Chain",
+  "chainId": 56,
+  "constructorArguments": [
+    "0x60b9262456de011f7d15a54cdd8c48baaa8b022f"
+  ],
+  "creationBytecodeBytes": 5786,
+  "creationBytecodeSha256": "416a96e6cb0b6c49f95d2db6daa785b0b9c17507ec82758e2b476f43e6398519",
+  "deploymentInitCodeBytes": 5818,
+  "deploymentInitCodeSha256": "4121d2311733f6470ee3fdb78654352f44a6c3d1a0dcbd42fc7b2fb9ce071b0b",
+  "deploymentEstimate": {
+    "evidenceStatus": "VERIFIED",
+    "blockNumber": 135956825,
+    "gasEstimate": "1268421",
+    "gasLimitWith20PercentHeadroom": "1522105",
+    "sampledFeePerGasWei": "50000000",
+    "estimatedExecutionFeeBNB": "0.00006342105",
+    "recommendedReserveBNB": "0.00007610525"
+  },
+  "mainnetReadiness": {
+    "approvedForMainnet": false,
+    "deploymentTransactionSent": false,
+    "independentSecurityReview": false,
+    "reviewedDeploymentAddress": null,
+    "qualifyingInteractions": 0
+  },
+  "artifacts": [
+    "MandavexGuard.abi.json",
+    "MandavexGuard.creation-bytecode.txt",
+    "deployment-init-code.txt"
+  ]
+}

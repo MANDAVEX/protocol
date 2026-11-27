@@ -35,6 +35,8 @@ It checks desktop/mobile layout, executes the valid and permission-bound task sc
 
 After a reviewed clean source commit, `npm run release:package` writes the reproducible ABI, creation bytecode, fully constructor-encoded init code and source/compiler/hash manifest under `../releases/mandavex-guard-rc1/`. The package is explicitly marked not approved for mainnet. Source verification settings are documented in [`BSC_SCAN_VERIFICATION.md`](BSC_SCAN_VERIFICATION.md).
 
+Current funding assumptions and the deployment, initialization, first-verification, buffer and participant-cost breakdown are documented in [`DEPLOYMENT_COSTS.md`](DEPLOYMENT_COSTS.md). The RPC price sample is time-sensitive and does not authorize spending.
+
 ## Contract integration
 
 The `MandavexGuard` source is experimental and has no deployment address. Read [the contract source](../contracts/src/MandavexGuard.sol), [security limitations](../SECURITY.md), and SDK helper documentation before integrating. There is no production API endpoint or MCP server yet.
