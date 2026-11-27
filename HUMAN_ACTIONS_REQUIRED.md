@@ -1,22 +1,22 @@
 # HUMAN_ACTIONS_REQUIRED
 
-## Immediate positive-path wallet action
+Updated: 2026-11-27 (Africa/Algiers)
 
-The next successful authorization probe needs a real signature from an Agent ID holder. The test can use a holder's own Agentic Wallet address as both issuer and executor. Never use another person's address or impersonate an address outside the local fork. A guarded workflow instruction artifact is at `skills/mandavex-agentic-wallet/SKILL.md`.
+## Mainnet deployment and production workflow
 
-When the wallet exercise is staged, the holder must:
+**Current state: BLOCKED.** The Guard has no deployment address, has not had independent security review, and the authorized project expenditure remains $0. No deployment or participant transaction is approved. The release candidate is under `releases/mandavex-guard-rc1/`; its manifest explicitly says `NOT APPROVED FOR MAINNET`.
 
-1. Use the official Binance Agentic Wallet integration and enable Developer Mode in the Binance App (Agentic Wallet management → Settings → Developer Mode), reviewing Binance's warning.
-2. Inspect and approve the exact EIP-712 mandate preview. It is scoped to the Guard contract, BSC chain 56, the demo counter increment, one exact payload, a short expiry and one use.
-3. Inspect and approve the contract-call preview. This executes only the `MandavexGuard.execute` action. Do not proceed if the Guard address, action, payload, fee or simulation differs from the review.
-4. Confirm any additional Binance App prompt. The test runs against a local BSC fork and is not mainnet activity.
+The following actions require human authority and cannot be replaced with simulation:
 
-The official CLI is not installed or authenticated in this workspace, the Guard has no production address, and the fork signing harness is not yet staged; stop before signing or transacting. No signature or secret is requested in chat. Do not use Binance web QR pairing; if the owner later chooses to authenticate, use the official mobile-app flow and retain all wallet confirmations.
+1. An independent reviewer must review the final immutable Guard source, registry assumptions, threat model and remaining timestamp finding.
+2. The founder must explicitly change the $0 budget authorization before any deployment cost is incurred. No change is assumed here.
+3. After review and budget authorization, the deployment wallet owner must verify the exact source commit, compiler settings, constructor registry address, init code, current gas estimate and wallet transaction preview, then personally approve the transaction.
+4. After deployment and source verification, an Agent ID holder must use their own official Binance Agentic Wallet, enable Developer Mode in the Binance App, inspect the exact EIP-712 signature preview and transaction preview, and personally confirm each required step. Do not ask them to provide credentials or a signature outside their wallet.
+5. Genuine holders must initiate their own contract interactions. Competition participation and eligibility require actual on-chain evidence; local EVMs, forks, screenshots, registrations and website activity do not count.
+6. An authorized project participant must submit the live eligible project during the official window and retain the submission confirmation.
 
-## Mainnet launch (not ready for approval)
+The current technical package is preparation only. It does not authorize any transaction or wallet prompt. Agentic Wallet connection, live signing, mainnet deployment, qualifying activity and competition submission remain unverified or unimplemented as recorded in `ACCEPTANCE_GATES.md`.
 
-Do not approve a deployment transaction yet. The Guard is experimental, not independently audited and has not completed a genuine holder-signed execution. Once those gates pass, a human with an authorized project deployment wallet must review the final source/constructor and exact gas estimate, then approve the transaction in their own wallet. No seed phrase or private key should be shared.
+## Out of scope for this release
 
-## Competition participation
-
-An Agent ID holder must initiate any real qualifying interaction from their own wallet. Only after a deployed product is working should an authorized project participant submit the project during the official window. No paid service, domain purchase, social post or mainnet spend has been made.
+Cloudflare authentication and token development are postponed by the takeover brief. Genesis remains inactive until its separately authorized infrastructure setup and privacy review are complete.

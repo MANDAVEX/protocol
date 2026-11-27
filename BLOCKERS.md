@@ -1,22 +1,26 @@
 # BLOCKERS
 
-- Foundry is unavailable; Hardhat EVM tests are in place. Contract coverage is not measured.
-- Verified Agent ID source, complete ABI, upgrade mechanism and holder-positive-path test remain unverified.
-- Reviewed source, CI and Pages deployment are published on GitHub `main`; static preview is live at `https://mandavex.github.io/protocol/`.
-- The live site now includes the browser EVM Arena and wallet-connected identity preview, but has no Guard address or production transaction workflow. Domain ownership/availability is unverified.
-- No authorized deployment wallet or approved gas budget supplied; no mainnet transaction.
-- The reviewed browser Arena, SDK, activity indexer and updated evidence are published on GitHub `main` and Pages. Genesis runtime configuration and production workflow remain unfinished.
-- `mandavex.io` resolves no DNS records; an RDAP lookup returned no domain record but availability and ownership are not verified.
-- 30 genuine qualifying Agent ID holder interactions remain mandatory and unachieved.
-- No longer blocked on deadline verification: official submission closes 2026-12-09 08:00 UTC.
-- The public site now includes the local browser Arena, but no production Guard address or browser mandate lifecycle exists. No independent security audit, authorized holder signature, production transaction, or competition submission exists. The available BNB fee is a point-in-time RPC estimate only.
+Updated: 2026-11-27 (Africa/Algiers)
 
-## Phase III blockers (2026-11-26)
+## Production activation
 
+- **BLOCKED:** Guard is not deployed. The release candidate is explicitly not approved for mainnet.
+- **BLOCKED:** No independent security review. Slither reports the expected timestamp dependency for `validAfter` and exclusive expiry; validator clock tolerance remains a protocol assumption.
+- **BLOCKED:** Current project spend authorization is $0. Deployment, the first production execution and gas costs cannot be incurred.
+- **BLOCKED:** No genuine Agent ID holder has signed and executed a production mandate. Forked registry state only verified identity gates and stopped at an invalid signature.
+- **BLOCKED:** No live Agentic Wallet Developer Mode preview/signing workflow has run against a reviewed deployed Guard. The official CLI workflow is documented and the CLI prepares the supported envelope, but no wallet session is connected.
+- **BLOCKED:** No qualifying production interactions or competition submission exist. Official rules require a live product, BNB Chain deployment with verified/open-source source, and 30 distinct Agent ID addresses interacting with submitted contracts during the submission period.
 
-- The holder-positive fork probe has no valid holder EIP-712 signature. Successful guarded execution and official wallet integration remain unverified.
-- Binance's documented external signing flow requires the holder to enable Developer Mode, inspect message/call previews and confirm any required app prompts. No `baw` CLI or connected Agentic Wallet session is present in this environment.
-- The contract remains experimental and undeployed. Mainnet launch requires independent security review and an authorized human to approve deployment costs/transaction.
-- Latest Pages failure was traced to an artifact lookup race: upload succeeded and the artifact was visible, while deploy found none. The two-job upload/deploy fix succeeded on commit `465c3884bb9881dea28a33c19807c527a4dc390c`; see `evidence/pages-artifact-investigation.md`.
-- No Genesis credentials, public adoption index, or verified qualifying participants exist. The interactive Arena currently runs only on local controlled fixtures; no competition submission exists.
-- The local official-wallet skill is preparatory only; it stops before signing while no reviewed Guard deployment exists.
+## Product and infrastructure limits
+
+- **PARTIALLY IMPLEMENTED:** Public site, browser EVM Arena, SDK/CLI, local collaboration workflow, receipt verification and adoption indexer are available. The browser Arena is a simulation; the site has no deployed-Guard mandate transaction interface.
+- **PARTIALLY IMPLEMENTED:** Passport performs public identity lookup and shows device-local demo evidence; it does not verify production Guard receipts while no Guard exists.
+- **BLOCKED:** Genesis has local handlers and a D1 migration but no shared production database or deployed registration service. Cloudflare authentication is postponed in this takeover.
+- **NOT IMPLEMENTED:** Independent professional audit/formal verification, recorded product video, actual holder-signed production execution and competition submission.
+- Foundry is not installed. Hardhat, seeded fuzz checks, Solidity compilation and Slither are used; this is not a substitute for formal verification or independent audit.
+
+## Verified recovery release
+
+- `main` contains the verified recovery, deployment candidate, public browser screenshots and current handoff records. GitHub CI/Pages and public build metadata match the latest pushed release; see `PROJECT_STATE.md` and `VERIFICATION_REPORT.md`.
+- The latest full suite passed 51/51. Local and public Playwright checks passed at desktop and mobile sizes. No mainnet transaction, paid service or spending occurred.
+- The time-sensitive deployment estimate is documented at BSC block `135956825`; recheck before any future human-authorized approval. Current recommended reserve is informational only and does not change the $0 limit.
