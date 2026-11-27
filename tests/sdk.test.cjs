@@ -1,7 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { AbiCoder, Interface, keccak256, toUtf8Bytes } = require('ethers');
-const { AGENT_ID_BSC, ACTION_INCREMENT, ACTION_TASK_SUBMIT, ACTION_TASK_ACCEPT, encodeTaskPayload, typedMandate, encodeExecute, encodeRevoke, verifyReceipt } = require('../packages/sdk/index.cjs');
+const { AGENT_ID_BSC, ACTION_INCREMENT, ACTION_TASK_SUBMIT, ACTION_TASK_ACCEPT, encodeTaskPayload, typedMandate, encodeExecute, encodeRevoke, verifyReceipt, verifyOnchainReceipt } = require('../packages/sdk/index.cjs');
 
 test('SDK publishes official BSC identity and the exact demo action hash', () => {
   assert.equal(AGENT_ID_BSC, '0x60b9262456de011f7d15a54cdd8c48baaa8b022f');
@@ -34,4 +34,14 @@ test('SDK encodes an execute call and fails closed when its receipt lacks a succ
   const revokeInterface = new Interface(['function revoke((address issuer,address executor,bytes32 action,bytes32 payloadHash,uint64 validAfter,uint64 expiry,uint256 nonce,uint32 maxUses) mandate)']);
   assert.equal(revokeInterface.parseTransaction({ data: revokeData }).name, 'revoke');
   assert.deepEqual(verifyReceipt({ status: 0, logs: [] }), { verified: false, reason: 'transaction_not_successful' });
+});
+
+test('SDK on-chain receipt verifier fails closed on invalid input and wrong chain', async () => {
+  const invalid = await verifyOnchainReceipt({}, 'bad-hash', {});
+  assert.deepEqual(invalid, { verified: false, reason: 'invalid_verification_input' });
+  const wrongChain = await verifyOnchainReceipt({ getNetwork: async () => ({ chainId: 1n }) }, `0x${'11'.repeat(32)}`, {
+    chainId: 56,
+    guardAddress: '0x0000000000000000000000000000000000000003',
+  });
+  assert.deepEqual(wrongChain, { verified: false, reason: 'wrong_chain', actualChainId: '1' });
 });

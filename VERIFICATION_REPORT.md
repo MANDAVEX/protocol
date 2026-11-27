@@ -41,3 +41,12 @@ The release is published at `467cbbf`. CI and Pages both succeeded; public build
 - Agent ID verified ABI/source and full upgrade/lifecycle analysis, complete application workflow, Guard deployment, independent audit, holder-positive path, Genesis, live adoption, video, submission.
 
 No production contract transaction or deployment result is claimed. The public website is a static preview only.
+
+## Latest local recovery verification — 2026-11-27
+
+- Nested Agentic Wallet serialization regression, including a >2^200 nonce and exact expiry/timestamp checks: PASS (focused CLI/SDK tests, 9/9).
+- Full suite: PASS (51/51); BSC fork ran at block `135956127`. The fork-only observed holder passes identity checks; execution stops at invalid signature. No holder signature or mainnet transaction occurred.
+- Solidity compile: PASS, solc 0.8.39, optimizer 200, Paris EVM, 5,786-byte creation code.
+- Browser bundle build: PASS, 767 KiB worker; adoption panel correctly says `BLOCKED · NOT RUN`.
+- Playwright: PASS at 1440×900 and 390×844; valid local execution, task acceptance, three local receipts, no horizontal overflow, no hero/footer overlap and zero page errors.
+- No commit, push, Pages deployment, mainnet transaction, or expenditure was made in this recovery turn. Latest public release remains `75e0f35`; local modifications are uncommitted.

@@ -19,11 +19,21 @@ npm run compile:contracts
 npm test
 ```
 
-The tests include Hardhat local-EVM execution and adversarial checks, a deterministic seeded payload fuzz sample, and a block-pinned BSC fork test against the production Agent ID registry. The fork rejects a non-holder and shows an observed holder passes both identity checks before deliberately invalid signature rejection. This does not prove positive authorized execution. See `../evidence/agent-id-holder-fork-check.json` and `../evidence/runtime-test-report.txt`. Static analysis observations are in `../evidence/slither-report.txt`. These are not an independent audit. Do not deploy the current source.
+The tests include Hardhat local-EVM lifecycle/adversarial checks, reproducible seeded payload/signature fuzz samples, SDK and CLI checks, and a block-pinned BSC fork test against the production Agent ID registry. The fork rejects a non-holder and shows an observed holder passes both identity checks before deliberately invalid signature rejection. This does not prove positive authorized execution. See `../evidence/agent-id-holder-fork-check.json` and `../evidence/runtime-test-report.txt`. Slither procedure and remaining timestamp observation are in `../evidence/slither-titanium-report.txt`; static analysis is not an independent audit.
+
+Run the reproducible local-browser smoke check after `npm ci` and `npx playwright install chromium`:
+
+```sh
+npm run test:browser
+```
+
+It checks desktop/mobile layout, executes the valid and permission-bound task scenarios in the browser-only fixture EVM, and verifies the local proof explorer. It makes no public-chain transaction.
 
 ## BSC deployment preparation
 
 `npm run estimate:bsc-deployment` reads the current BSC registry, gas estimate and gas price without a wallet. `npm run prepare:bsc-deployment` prints an unsigned contract-creation transaction for human review in a wallet. It reads no private key and does not broadcast. Latest estimate and limits: `../evidence/bsc-mainnet-deployment-estimate.json`. A gas estimate is not a fee guarantee; review the live amount in the wallet before signing.
+
+After a reviewed clean source commit, `npm run release:package` writes the reproducible ABI, creation bytecode, fully constructor-encoded init code and source/compiler/hash manifest under `../releases/mandavex-guard-rc1/`. The package is explicitly marked not approved for mainnet. Source verification settings are documented in [`BSC_SCAN_VERIFICATION.md`](BSC_SCAN_VERIFICATION.md).
 
 ## Contract integration
 
@@ -33,7 +43,7 @@ The `MandavexGuard` source is experimental and has no deployment address. Read [
 
 The Guard supports two fixed task transitions in addition to the original counter fixture: `MANDAVEX_TASK_SUBMIT_V1` records an owner, contributor and non-zero artifact hash; `MANDAVEX_TASK_ACCEPT_V1` lets a distinct reviewer accept only that exact hash. Both actions use the same EIP-712 mandate checks, execution-time Agent ID reads, expiry, nonce, use limit and revocation as the fixture action. No arbitrary contract calls or asset movement are enabled. The Guard stores only task metadata and a hash; the artifact itself remains off-chain, so reviewers must independently verify its contents before authorizing acceptance.
 
-Prepare typed data for a submission or acceptance with the CLI (preparation only; it never signs or sends):
+Prepare typed data for a submission or acceptance with the CLI (preparation only; it never signs or sends). For BNB Chain, the guard must match a deployed manifest entry; local `31337` remains a fixture:
 
 ```sh
 node scripts/mandate-cli.cjs prepare --issuer OWNER --executor CONTRIBUTOR --guard GUARD --chain 31337 --nonce 1 --expiry UNIX_SECONDS --action submit-task --task-id 0xTASK_ID_64_HEX --artifact-hash 0xARTIFACT_HASH_64_HEX
@@ -41,11 +51,15 @@ node scripts/mandate-cli.cjs prepare --issuer OWNER --executor CONTRIBUTOR --gua
 
 For acceptance use `--executor REVIEWER --action accept-task` and the same task ID and artifact hash. The owner signs the typed data; the named executor reviews it and decides whether to submit the encoded call. On BNB mainnet use `--chain 56` only with a reviewed deployment address. User wallets must show the complete transaction and request explicit confirmation. Production execution remains unavailable until deployment and review.
 
-The CLI also prints an unsigned `revoke(mandate)` calldata template for the same mandate. Only the issuer can successfully call it; the executor must inspect the target Guard and function before signing. The local Arena's “Revoked mandate” scenario demonstrates the revocation path using only a fresh fixture.
+The CLI also prints the complete `eth_signTypedData_v4` request envelope in `agenticWalletSignRequestJson`, plus unsigned execute and `revoke(mandate)` calldata templates. Follow the official BAW safety order in [Agentic Wallet workflow](AGENTIC_WALLET_WORKFLOW.md): check Developer Mode before constructing a preview; inspect, approve and execute only a returned preview ID. Only the issuer can revoke. No signature or transaction is produced by this CLI.
 
 The public browser Arena runs the same compiled Solidity source and performs submission, self-review rejection, artifact-substitution rejection and acceptance using mock identities in a local in-memory EVM. Its receipts and hashes are local simulation evidence and are not public-chain transactions.
 
 See [Agentic Wallet workflow](AGENTIC_WALLET_WORKFLOW.md) for the official documented Developer Mode EIP-712 signing and contract-call flow. It is a candidate integration only; no wallet session was connected or exercised.
+
+### Public receipt verification
+
+`npm run verify:receipt -- --tx 0x...` reads `deployments/manifest.json`, then verifies the BSC chain, target Guard, successful transaction receipt, canonical receipt block and `ActionAuthorized` event using the configured public RPC. It refuses to make an RPC lookup until a deployed Guard is recorded. The verifier authenticates on-chain event data, not the truth of external artifacts.
 
 ## Adoption evidence indexer (pre-deployment)
 

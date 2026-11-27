@@ -18,6 +18,12 @@ function run(args = process.argv.slice(2)) {
   const issuer = getAddress(opts.issuer || '');
   const executor = getAddress(opts.executor || '');
   const guard = getAddress(opts.guard || '');
+  if (chainId === 56) {
+    const manifest = require('../deployments/manifest.json');
+    if (manifest.status !== 'DEPLOYED' || manifest.network?.mandavexGuard?.toLowerCase() !== guard.toLowerCase()) {
+      throw new Error('Mainnet mandate preparation is blocked until the requested Guard matches a deployed, reviewed manifest');
+    }
+  }
   const now = Math.floor(Date.now() / 1000);
   const expiry = BigInt(opts.expiry || 0);
   const nonce = BigInt(opts.nonce || -1);
@@ -35,8 +41,12 @@ function run(args = process.argv.slice(2)) {
   } else throw new Error('action must be increment, submit-task, or accept-task');
   const mandate = { issuer, executor, action, payloadHash: keccak256(payload), validAfter: BigInt(now), expiry, nonce, maxUses: 1 };
   const message = typedMandate(mandate, chainId, guard);
+  const agenticWalletSignRequestJson = JSON.stringify({
+    method: 'eth_signTypedData_v4',
+    params: [issuer, JSON.stringify(message, (_, value) => typeof value === 'bigint' ? value.toString() : value)],
+  });
   const calldata = encodeExecute(mandate, payload, '0x');
-  process.stdout.write(`${JSON.stringify({ status: 'PREPARATION ONLY · NOT SIGNED · NOT SENT', chainId, guard, action: selectedAction, payload: `0x${Buffer.from(payload).toString('hex')}`, typedData: message, unsignedExecuteCalldataTemplate: calldata, unsignedRevokeCalldataTemplate: encodeRevoke(mandate) }, (_, value) => typeof value === 'bigint' ? value.toString() : value, 2)}\n`);
+  process.stdout.write(`${JSON.stringify({ status: 'PREPARATION ONLY · NOT SIGNED · NOT SENT', chainId, guard, action: selectedAction, payload: `0x${Buffer.from(payload).toString('hex')}`, typedData: message, agenticWalletSignRequestJson, unsignedExecuteCalldataTemplate: calldata, unsignedRevokeCalldataTemplate: encodeRevoke(mandate) }, (_, value) => typeof value === 'bigint' ? value.toString() : value, 2)}\n`);
 }
 
 if (require.main === module) {

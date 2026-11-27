@@ -1,33 +1,66 @@
-# MANDAVEX Agentic Wallet workflow (candidate integration)
+# Binance Agentic Wallet integration readiness
 
-## Scope
+**Evidence status: IMPLEMENTED BUT UNVERIFIED.** The SDK/CLI generate the Guard's typed mandate, EIP-712 request envelope, execution calldata template and revocation calldata. This machine does not have a connected Binance Agentic Wallet session or a deployed Guard. No BAW preview, signature, or transaction has been performed.
 
-The current Guard is not deployed and no production address exists. This is a verified-documentation-based integration design, not a tested wallet integration. It does not use a web QR login, ask for a pairing code, or collect a seed phrase/private key.
+## Mandatory safety order
 
-## Officially documented path
+The current official Binance skill requires an early Developer Mode check. As soon as a requested action needs `contract-call` or `sign-message`, run `baw wallet settings --json` **before** constructing typed data, calldata or a preview. Stop unless `devMode.enabled` is true and `devMode.expiresAt` is in the future. Developer Mode is enabled in the Binance App and has a human-confirmed risk warning. Do not bypass it or request wallet secrets.
 
-Binance's Agentic Wallet skill documents external contract-call preview/execute and EIP-712 `sign-message` preview/execute/result. It requires Developer Mode, showing the parsed operation and risk output, and explicit user confirmation before execution. The feature is controlled in the Binance App and may require an additional app confirmation.
+The official external-sign flow is two-step: preview, inspect the parsed operation and risks, obtain explicit human approval, then execute only the exact preview `requestId`. Any required Binance App confirmation remains with the wallet holder. A preview or pending request is not a signature or transaction.
 
-1. Install the official [Binance Agentic Wallet skill](https://github.com/binance/binance-skills-hub/tree/main/skills/binance-web3/binance-agentic-wallet) using its official setup instructions.
-2. In the Binance App, enable Agentic Wallet Developer Mode and accept its risk warning. This is a human-controlled, time-limited setting.
-3. Run `baw wallet settings --json`; stop unless Developer Mode is enabled and unexpired.
-4. Build an EIP-712 `Mandate` with the exact deployed Guard address, chain ID 56, holder's own wallet as issuer and executor, the fixed increment action, exact payload hash, validity window, nonce and one-use limit.
-5. Run `baw sign-message preview --binanceChainId 56 --signType EIP712 --message '<eth_signTypedData_v4 request JSON>' --json`. Inspect `parsedMessage` and risks. Ask the holder to explicitly approve before `sign-message execute`.
-6. If the wallet requires app confirmation, wait for that confirmation and retrieve the result through `baw sign-message result --order-id <orderId> --json`. Never treat a pending order as a signature.
-7. Encode `execute(mandate, payload, signature)` with the published ABI and run `baw contract-call preview --binanceChainId 56 --from <holder> --to <deployed Guard> --inputData <calldata> --json`.
-8. Inspect the parsed call, simulation, risk output and expected fee. Obtain explicit holder confirmation, then call `baw contract-call execute --requestId <requestId> --json`. If app confirmation is pending, wait for the user to approve it.
-9. Verify the returned transaction hash on BscScan, confirm success and `ActionAuthorized`, and check the Guard state and Agent ID `balanceOf` at that block.
+## Prepare a mandate
 
-## Current status and limitations
+Once the official Developer Mode check passes and a reviewed Guard is deployed, prepare task actions using the project CLI. Use addresses controlled by the participating issuer and executor, the official BNB Agent ID registry, a fresh nonce, a short validity window (no more than the contract's 24-hour cap) and one use unless the reviewed use case requires otherwise.
 
-- The official docs describe this external signing path and BSC support. MANDAVEX has not installed/authenticated the wallet skill or exercised the flow.
-- The Guard has no deployed address, so no valid production calldata or preview can currently be made.
-- `contract-call` and `sign-message` may require Developer Mode and user confirmation. Do not bypass those requirements.
-- A signed mandate is a permission grant, even though the present demo action is a counter increment. The holder must inspect exact typed data and its scope before signing.
-- No actual transaction, adoption, or competition-eligible interaction is claimed.
+```powershell
+npm run mandate:prepare -- --issuer $ISSUER --executor $EXECUTOR --guard $GUARD --chain 56 --nonce $NONCE --expiry $EXPIRY --action submit-task --task-id $TASK_ID --artifact-hash $ARTIFACT_HASH
+```
+
+For `accept-task`, retain the same task ID and artifact hash and use the task owner as the mandate issuer with a distinct reviewer as executor. The mainnet CLI refuses to prepare typed data unless the requested Guard matches a deployed address in `deployments/manifest.json`. Local `31337` data is fixture-only and cannot be used on mainnet.
+
+The CLI prints `agenticWalletSignRequestJson`, which is the official full request envelope:
+
+```json
+{"method":"eth_signTypedData_v4","params":["<issuer wallet>","<serialized EIP-712 typed data>"]}
+```
+
+Pass that complete string to the official preview command and inspect the returned parsed message, risk report, wallet and request ID:
+
+```powershell
+baw sign-message preview --binanceChainId 56 --signType EIP712 --message $SIGN_REQUEST_JSON --json
+```
+
+After the user has approved the exact preview, execute only its request ID. If the app creates an order, wait for user confirmation and retrieve it using the official result command. Confirm the returned signer equals the mandate issuer.
+
+## Preview and submit an execution
+
+Insert the returned signature into the CLI's unsigned execution template with the SDK. Then preview the exact Guard call:
+
+```powershell
+baw contract-call preview --binanceChainId 56 --from $EXECUTOR --to $GUARD --inputData $CALLDATA --json
+```
+
+Review decoded target, data, simulation, risk output, authority changes and fee with the user. Execute only after explicit approval of the exact request. Any app-level confirmation remains with the wallet holder. No transaction is allowed when the preview fails or differs from the approved call.
+
+## Verify a public receipt
+
+After a confirmed transaction, verify from an independent BSC RPC:
+
+```powershell
+npm run verify:receipt -- --tx $TRANSACTION_HASH
+```
+
+The command reads the BNB Chain deployment manifest, checks chain ID, transaction/receipt status, Guard target, canonical block hash and the `ActionAuthorized` event, and reports the exact block. It stops before any RPC call when no deployed Guard is recorded. This receipt proves the Guard event and encoded values, not the truth of off-chain work.
+
+## Present limits
+
+- No deployed reviewed Guard address is present. Mainnet typed-data preparation, receipt lookup and wallet execution remain unavailable.
+- The static public site has no wallet-backed production mandate lifecycle; its Arena uses ephemeral local keys and a mock registry.
+- No Binance CLI session is connected here, so the official `wallet settings`, preview, signature and contract-call paths have not been executed.
+- Never ask for a seed phrase, private key, QR pairing code or OTP. Keep all wallet confirmations under the holder's direct control.
 
 ## Official references
 
-- [Agentic Wallet developer documentation](https://developers.binance.com/en/docs/products/agentic-wallet/welcome)
-- [Agentic Wallet external signing reference](https://github.com/binance/binance-skills-hub/blob/main/skills/binance-web3/binance-agentic-wallet/references/external-sign.md)
-- [Official Agent ID hackathon announcement and rules](https://www.binance.com/en/support/announcement/detail/95f5dbe0ea674a48a739b59e046648bf)
+- [Agentic Wallet skill](https://github.com/binance/binance-skills-hub/blob/main/skills/binance-web3/binance-agentic-wallet/SKILL.md)
+- [External signing reference](https://github.com/binance/binance-skills-hub/blob/main/skills/binance-web3/binance-agentic-wallet/references/external-sign.md)
+- [Agent ID hackathon rules](https://www.binance.com/en/support/announcement/detail/95f5dbe0ea674a48a739b59e046648bf)

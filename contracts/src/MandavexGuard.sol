@@ -1,6 +1,10 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.24;
 
+interface IAgentIdRegistry {
+    function balanceOf(address account) external view returns (uint256);
+}
+
 /// @notice Experimental immutable authorization-bound demo counter. Holds no assets and makes no arbitrary calls.
 /// @dev Agent ID balance is checked for both issuer and executor at execution time. Not audited.
 contract MandavexGuard {
@@ -12,6 +16,7 @@ contract MandavexGuard {
     bytes32 private constant NAME_HASH = keccak256("MANDAVEX");
     bytes32 private constant VERSION_HASH = keccak256("1");
     uint256 private constant SECP256K1N_HALF = 0x7fffffffffffffffffffffffffffffff5d576e7357a4501ddfe92f46681b20a0;
+    uint64 public constant MAX_MANDATE_LIFETIME = 1 days;
 
     struct Mandate {
         address issuer;
@@ -102,8 +107,8 @@ contract MandavexGuard {
     }
 
     function _checkWindow(Mandate calldata m) private view {
-        if (m.maxUses == 0 || m.expiry <= m.validAfter) revert InvalidMandate();
-        if (block.timestamp < m.validAfter || block.timestamp > m.expiry) revert InvalidTime();
+        if (m.maxUses == 0 || m.expiry <= m.validAfter || uint256(m.expiry) - uint256(m.validAfter) > MAX_MANDATE_LIFETIME) revert InvalidMandate();
+        if (block.timestamp < m.validAfter || block.timestamp >= m.expiry) revert InvalidTime();
     }
 
     function _checkScope(Mandate calldata m, bytes calldata payload) private pure {
@@ -134,9 +139,11 @@ contract MandavexGuard {
     }
 
     function _hasAgentId(address account) private view returns (bool) {
-        (bool ok, bytes memory result) = agentId.staticcall(abi.encodeWithSignature("balanceOf(address)", account));
-        if (!ok || result.length < 32) revert InvalidIdentity();
-        return abi.decode(result, (uint256)) > 0;
+        try IAgentIdRegistry(agentId).balanceOf(account) returns (uint256 balance) {
+            return balance > 0;
+        } catch {
+            return false;
+        }
     }
 
     function _structHash(Mandate calldata m) private pure returns (bytes32) {
@@ -155,12 +162,9 @@ contract MandavexGuard {
 
     function _recover(bytes32 digest, bytes calldata sig) private pure returns (address signer) {
         if (sig.length != 65) revert InvalidSignature();
-        bytes32 r; bytes32 s; uint8 v;
-        assembly {
-            r := calldataload(sig.offset)
-            s := calldataload(add(sig.offset, 32))
-            v := byte(0, calldataload(add(sig.offset, 64)))
-        }
+        bytes32 r = bytes32(sig[0:32]);
+        bytes32 s = bytes32(sig[32:64]);
+        uint8 v = uint8(sig[64]);
         if (uint256(s) > SECP256K1N_HALF || (v != 27 && v != 28)) revert InvalidSignature();
         signer = ecrecover(digest, v, r, s);
         if (signer == address(0)) revert InvalidSignature();

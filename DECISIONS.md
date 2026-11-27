@@ -55,3 +55,20 @@ The user approved publishing the static preview and its Pages workflow permissio
 - GitHub Pages logs on commit `bbcbec3` showed `upload-pages-artifact` completed and created a `github-pages` artifact, but `deploy-pages` immediately found zero artifacts. This matches the documented intermittent lookup race in [actions/deploy-pages issue 451](https://github.com/actions/deploy-pages/issues/451). The workflow now moves upload and deployment to separate dependent jobs, pins current major action versions and scopes `pages: write`/`id-token: write` to deployment only. The repair was verified by the successful CI and Pages runs for commit `465c3884bb9881dea28a33c19807c527a4dc390c`; the independent page reported the same deployed commit.
 - Added a local Binance Agentic Wallet workflow skill with a hard stop until a reviewed Guard deployment exists. It follows the official EIP-712 and contract-call preview/execute path, keeps wallet approval explicit, forbids secrets and QR pairing, and does not assert integration testing. This adds operating guidance only; no contract architecture changed.
 - Added a loopback-only Arena server that starts a separate Hardhat EVM on port 18547 and serves the web app on port 4173. Each scenario deploys fresh MockAgentId and Guard fixtures and uses controlled local keys. The browser never receives fixture private keys; scenario runs are server-side and explicitly labeled local. This avoids collision with the BSC fork test port and keeps the demonstration independent of paid infrastructure.
+
+## 2026-11-27 — Bound authorization time and make registry failure typed/fail-closed
+
+- Limit each mandate's validity window to 24 hours and make expiry exclusive (`block.timestamp >= expiry`). This reduces exposure while preserving the chain timestamp as an explicit consensus assumption.
+- Replace manual signature calldata assembly with bounds-checked calldata slices and keep strict 65-byte/low-s/v validation.
+- Read Agent ID through the typed registry interface with `try/catch`; registry reverts and decode failures yield no identity and the Guard rejects before state changes.
+- Add reproducible fuzz coverage for malformed payloads and signatures and verify state/nonce/use invariants remain unchanged after rejection.
+
+## 2026-11-27 — Verify receipts from independent chain data
+
+- Add an SDK verifier that checks RPC chain ID, transaction/receipt, Guard destination, canonical receipt block and expected Guard event. Add a CLI that is blocked unless the reviewed Guard is present in the deployment manifest.
+- The browser Passport remains a public identity lookup and a device-local demo receipt explorer; it does not elevate local hashes into chain proofs.
+
+## 2026-11-27 — Keep browser end-to-end checks reproducible
+
+- Pin Playwright as a development dependency and add `npm run test:browser` for desktop/mobile layout, browser EVM actions, task acceptance and receipt explorer assertions. The test creates only local fixture evidence and sends no BNB RPC request.
+- Mobile smoke revealed the hero footer overlapping actions. At the mobile breakpoint the footer now flows after the buttons, and the Playwright test guards both overlap and horizontal overflow.

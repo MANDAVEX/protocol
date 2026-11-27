@@ -12,7 +12,7 @@ Use only with the official Binance Agentic Wallet skill and a deployment that ha
 1. Read `deployments/manifest.json`. Stop if the requested network does not have a verified Guard address, deployed bytecode reference, source commit, and registry address. Do not infer addresses from examples or local artifacts.
 2. Confirm the target chain, Guard address, immutable Agent ID registry address, and reviewed source commit match the deployment manifest. For BNB Smart Chain mainnet the chain ID is 56. Never use a fork address as a mainnet address.
 3. Require the issuer and executor to be the participating user's own Agent ID wallet. Do not use a third party's wallet, impersonate a holder, ask for a seed phrase/private key, or request browser QR pairing.
-4. Require Agentic Wallet Developer Mode to be enabled and unexpired. Check `baw wallet settings --json`; stop if unavailable or disabled.
+4. As soon as the request is known to require external signing, first check `baw wallet settings --json`. Do this before constructing typed data, calldata or a preview. Stop if Developer Mode is off or expired; a human must enable it in the Binance App and approve its risk warning before the CLI continues.
 5. Show every typed-data field and transaction preview to the user. Get explicit approval immediately before each wallet `execute` action. Honor any additional Binance App confirmation. A pending request is not approval and is not a signature.
 6. Never deploy, revoke, submit a transaction, or spend funds unless the user explicitly requested that exact action and approved its displayed details.
 
@@ -28,8 +28,8 @@ The only action supported by the experimental Guard is `MANDAVEX_DEMO_INCREMENT_
    baw wallet settings --json
    ```
 
-2. Prepare one narrow mandate from the deployed Guard ABI and SDK. It must bind chain ID, verifying contract, Agent ID issuer, Agent ID executor, the fixed demo action, exact payload hash, a short validity window, a fresh nonce, and `maxUses: 1`. The Guard's EIP-712 domain is `MANDAVEX`, version `1`; the struct type is `Mandate(address issuer,address executor,bytes32 action,bytes32 payloadHash,uint64 validAfter,uint64 expiry,uint256 nonce,uint32 maxUses)`. Use project encoder output; never hand-edit a signature or relax a field to make it pass.
-3. Ask the official Binance skill to preview EIP-712 signing. Provide its documented `eth_signTypedData_v4` request JSON to `--message`; inspect parsed fields, risks, and wallet address:
+2. Only after Developer Mode is confirmed, prepare one narrow mandate from the deployed Guard ABI and SDK. It must bind chain ID, verifying contract, Agent ID issuer, Agent ID executor, a supported action, exact payload hash, a validity period of at most 24 hours, a fresh nonce, and a bounded use count. The Guard's EIP-712 domain is `MANDAVEX`, version `1`; the struct type is `Mandate(address issuer,address executor,bytes32 action,bytes32 payloadHash,uint64 validAfter,uint64 expiry,uint256 nonce,uint32 maxUses)`. Use project encoder output; never hand-edit a signature or relax a field to make it pass.
+3. Wrap typed data as the full documented `eth_signTypedData_v4` request: method plus `[issuerAddress, JSON.stringify(typedData)]`. The CLI emits this as `agenticWalletSignRequestJson`. Inspect all fields before passing it to `--message`:
 
    ```text
    baw sign-message preview --binanceChainId 56 --signType EIP712 --message '<eth_signTypedData_v4 request JSON>' --json

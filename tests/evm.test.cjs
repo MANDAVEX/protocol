@@ -2,9 +2,9 @@ const { before, after, test } = require('node:test');
 const assert = require('node:assert/strict');
 const { spawn } = require('node:child_process');
 const path = require('node:path');
-const { JsonRpcProvider, ContractFactory, Signature, AbiCoder, concat, keccak256, toBeHex, toUtf8Bytes } = require('ethers');
+const { JsonRpcProvider, ContractFactory, Signature, AbiCoder, concat, hexlify, keccak256, toBeHex, toUtf8Bytes } = require('ethers');
 const { contract, mock } = require('../scripts/compile-contract.cjs');
-const { verifyReceipt } = require('../packages/sdk/index.cjs');
+const { verifyReceipt, verifyOnchainReceipt } = require('../packages/sdk/index.cjs');
 const { verifyInteraction } = require('../scripts/index-activity.cjs');
 
 const port = 18545;
@@ -98,6 +98,13 @@ test('valid EIP-712 mandate executes, consumes bounded use, emits proof, and rev
   assert.equal(parsed.args.counterAfter, 1n);
   const sdkReceipt = verifyReceipt(receipt, { issuer: mandate.issuer, executor: mandate.executor, action: mandate.action, payloadHash: mandate.payloadHash, mandateId: await ctx.guard.mandateId(mandate), counterAfter: 1 }, await ctx.guard.getAddress());
   assert.equal(sdkReceipt.verified, true, 'SDK receipt verifier must accept the real local Guard event');
+  const chainReceipt = await verifyOnchainReceipt(provider, receipt.hash, {
+    chainId: 31337,
+    guardAddress: await ctx.guard.getAddress(),
+    expected: { issuer: mandate.issuer, executor: mandate.executor, action: mandate.action, payloadHash: mandate.payloadHash, mandateId: await ctx.guard.mandateId(mandate), counterAfter: 1 },
+  });
+  assert.equal(chainReceipt.verified, true, 'SDK must confirm the receipt, Guard target, chain and canonical block');
+  assert.equal(chainReceipt.chainId, 31337);
   const localInteraction = await verifyInteraction(provider, receipt, {
     guardAddress: await ctx.guard.getAddress(), registryAddress: await ctx.registry.getAddress(), chainId: 31337,
     windowStart: 0, windowEnd: Number.MAX_SAFE_INTEGER,
@@ -199,6 +206,35 @@ test('expired mandate is rejected at the execution boundary', async () => {
   assert.equal(await ctx.guard.demoCounter(), 0n);
 });
 
+test('identity registry failure remains fail-closed before any state change', async () => {
+  const ctx = await fixture();
+  const signed = await signedMandate(ctx);
+  await (await ctx.registry.setShouldRevert(true)).wait();
+  await expectCustomError(ctx.guard.connect(ctx.executor).execute.staticCall(signed.mandate, payload, signed.signature), 'InvalidIdentity()');
+  assert.equal(await ctx.guard.demoCounter(), 0n);
+  assert.equal(await ctx.guard.uses(await ctx.guard.mandateId(signed.mandate)), 0n);
+  assert.equal(await ctx.guard.nonceMandate(signed.mandate.issuer, signed.mandate.nonce), `0x${'00'.repeat(32)}`);
+});
+
+test('mandate validity is capped at one day and the expiry boundary is exclusive', async () => {
+  const ctx = await fixture();
+  const block = await provider.getBlock('latest');
+  const tooLong = await signedMandate(ctx, {
+    validAfter: BigInt(block.timestamp - 1),
+    expiry: BigInt(block.timestamp + 86400),
+  });
+  await expectCustomError(ctx.guard.connect(ctx.executor).execute.staticCall(tooLong.mandate, payload, tooLong.signature), 'InvalidMandate()');
+
+  const boundary = await signedMandate(ctx, {
+    validAfter: BigInt(block.timestamp - 1),
+    expiry: BigInt(block.timestamp + 30),
+  });
+  await provider.send('evm_setNextBlockTimestamp', [Number(boundary.mandate.expiry)]);
+  await provider.send('evm_mine', []);
+  await expectCustomError(ctx.guard.connect(ctx.executor).execute.staticCall(boundary.mandate, payload, boundary.signature), 'InvalidTime()');
+  assert.equal(await ctx.guard.demoCounter(), 0n);
+});
+
 test('future mandate, malformed signature, and cross-contract typed-data replay are rejected', async () => {
   const ctx = await fixture();
   const block = await provider.getBlock('latest');
@@ -247,6 +283,10 @@ test('seeded payload fuzz rejects malformed requests without changing invariants
     const length = i % 65;
     const bytes = Uint8Array.from({ length }, nextByte);
     await expectCustomError(ctx.guard.connect(ctx.executor).execute.staticCall(signed.mandate, bytes, signed.signature), 'ScopeMismatch()');
+  }
+  for (let i = 0; i < 64; i++) {
+    const malformedSignature = hexlify(Uint8Array.from({ length: 65 }, nextByte));
+    await expectCustomError(ctx.guard.connect(ctx.executor).execute.staticCall(signed.mandate, payload, malformedSignature), 'InvalidSignature()');
   }
   assert.equal(await ctx.guard.demoCounter(), 0n);
   assert.equal(await ctx.guard.uses(await ctx.guard.mandateId(signed.mandate)), 0n);

@@ -1,59 +1,29 @@
 # Next Actions
 
-## Active continuation — Cloudflare Genesis
+Updated: 2026-11-27 (Africa/Algiers)
 
-- Await the user's click or cancellation on GitHub's Cloudflare Workers and Pages authorization screen; do not accept the new security access on their behalf.
-- Resume GitHub repository linking after the user returns. Create only a free Pages project and free D1 database; preserve the project-level D1 binding and apply `infra/cloudflare/migrations/0001_genesis.sql`.
-- Wrangler 4.168.0 is installed and its local D1 migration procedure is verified. Once the remote D1 ID and Pages project exist, use the explicit `--remote` migration path, configure `RATE_LIMIT_SALT` as an encrypted secret (never commit it), deploy Pages Functions, and set the production `mandavex-genesis-api` meta endpoint to the verified `pages.dev` URL.
-- Verify the production UI and API from distinct browser contexts against D1: registration persistence, duplicate handling, invalid data, rate limits, identity lookup, OPTIONS/CORS allowlist, status reference and storage/RPC failures. Do not activate Genesis until every check passes.
-- After the user completes the GitHub authorization, finish the Pages/D1 setup and run the pending desktop/mobile smoke for Genesis, collaboration, and the new Adoption panel. Then address Genesis privacy/retention, wallet integration review, security hardening, and competition evidence. Keep mainnet transaction count zero unless independently verified real interactions exist.
+## Current engineering recovery
 
-Updated: 2026-11-27 00:20 UTC.
+The reviewed adoption dashboard commit `75e0f35` is published on GitHub `main`. CI and Pages succeeded and public build metadata reports that commit. Follow-up contract hardening, SDK/CLI receipt verification, the Playwright desktop/mobile check and competition materials are present locally and require final diff review, commit and publication.
 
-## Operation Titanium progress — 2026-11-26
+Immediate interrupted task is resolved and verified: nested Agentic Wallet typed-data JSON converts BigInts to exact decimal strings; regression covers uint64 timestamps and a >2^200 uint256 nonce. Full suite passes 51/51; BSC fork was read-only at block `135956127`. Contract compile, web build and Playwright desktop/mobile smoke pass. Before publication, review all inherited local diffs, check for secrets, inspect actual public app state and confirm GitHub CI/Pages for the validated commit. No local modifications have been committed or pushed.
 
-- Implemented fixed permission-bound task submission and review acceptance in the Guard, Arena, SDK and preparation-only CLI, including unsigned revoke calldata. Local EVM tests verify exact-hash acceptance, distinct reviewer enforcement, and rejection of self-review, wrong owner, duplicate tasks and malformed payloads.
-- Added eight focused indexer tests covering canonical receipts, reorg rejection, failed receipts, direct versus relayed senders, address de-duplication, competition-window edges, historical identity state, RPC failures and adaptive pagination.
-- Added six Genesis handler checks for configuration failure, malformed/invalid/duplicate registrations, hashed rate-limit keys, six-per-window throttling, block-pinned identity lookup and D1/RPC failure fallback.
-- Final previous full test run: 40 passed, 0 failed, including the refactored Guard validation path. The current follow-up run passes 41/41; contract compile, browser build, and authorized dependency audit pass. Release `f345192` was the starting checkpoint for this continuation. Cloudflare dashboard sign-in is complete; GitHub Workers and Pages authorization remains with the user. Shared Cloudflare D1 is not configured.
-- npm audit and public BNB RPC checks are explicitly authorized; the default environment cannot reach those endpoints, so run only where network access is available. No deployment transaction or spend is authorized.
+## Release readiness
 
-## Last completed
+1. Review and publish the current local recovery changes; confirm CI and Pages against the new source commit.
+2. Obtain independent security review of the immutable Guard. Slither currently reports the intentional timestamp-boundary dependency; no audit is claimed.
+3. Freeze the exact source/compiler configuration and recheck the BNB gas price and funding reserve before any human approval.
+4. Keep mainnet deployment disabled under the current `$0.00` authorization. If funding authorization changes, the wallet owner must inspect and approve the exact unsigned deployment transaction.
+5. Only after reviewed deployment: enable the official Agentic Wallet Developer Mode by the holder, use preview/explicit confirmation flows, and verify every receipt independently.
+6. Recruit genuine Agent ID holders only after a safe live product exists; track candidate interactions separately from official qualification.
+7. Finish the competition recording and submit only after eligibility evidence is true. Current local fixtures, BSC forks and static preview do not meet the mainnet interaction requirement.
 
-- Recovered and preserved the transferred MANDAVEX workspace.
-- Published the initial browser Arena release at `f61525b`, documentation checkpoint `9762d33`, and Titanium task collaboration at `467cbbf` on GitHub `main` and Pages.
-- Previous release `npm test`: 21 passed, 0 failed. Titanium workspace test run: 40 passed, 0 failed; latest BSC fork block: 135770097.
-- `npm run compile:contracts`, `npm run build:web`, and `npm audit --audit-level=low` succeeded; audit found 0 vulnerabilities.
-- GitHub CI and Pages passed. Live build metadata and page assets match the release. Public browser smoke passed both a valid local mandate and a payload-tampering rejection.
-- Recorded current acceptance gates and deployment evidence in `ACCEPTANCE_GATES.md` and `evidence/public-arena-deployment.json`.
+## Completed evidence
 
-## Current state
+- Full regression suite: 51 passed, 0 failed; latest fork block `135956127`.
+- Playwright local smoke passed desktop 1440×900 and mobile 390×844, including demo execution, task acceptance and local receipt explorer.
+- `npm run compile:contracts` and `npm run build:web` passed.
+- Slither completed against native solc 0.8.39; one timestamp detector observation remains.
+- Read-only unsigned deployment preparation at block `135952337`: recommended sampled funding reserve `0.00007610525 BNB` with 20% gas-limit headroom.
 
-- The public site has a real browser-side EVM Arena. It uses ephemeral keys and mock identity, makes no RPC call, and sends no public-chain transaction.
-- Mainnet Guard remains undeployed, unaudited, and without a production address. There is no successful real-holder signature or qualifying production interaction.
-- Shared Genesis is preparatory only: Cloudflare D1 has not been created or connected, and no signup service is active.
-- The submission deadline is 2026-12-09 08:00 UTC. Eligibility requires a live product and at least 30 distinct Agent ID addresses interacting with participating contracts during the submission period.
-
-## Exact next engineering task
-
-Resume the handed-off browser session after the founder completes Google's sign-in consent, then verify the public collaboration workflow on desktop and mobile. Continue to free D1 setup and Genesis deployment, keeping the service inactive until persistence, privacy, rate limits, duplicate behavior and failure paths are verified against real Cloudflare D1. Do not claim Genesis activation until that end-to-end check succeeds.
-
-## Dependent work
-
-- Stage a genuine holder-positive authorization workflow when an authorized Agent ID holder can review the exact mandate and provide their own wallet confirmation. Do not request or handle their private key.
-- Obtain an independent security review before production deployment.
-- Configure Genesis only after an authorized Cloudflare database, privacy/retention policy, and rate limiting are reviewed.
-- After a production Guard is deployed, recruit genuine Agent ID holders and collect verifiable interactions. Do not manufacture activity.
-
-## Tests to rerun after code changes
-
-- `npm test`
-- `npm run compile:contracts`
-- `npm run build:web`
-- `npm audit --audit-level=low`
-
-The dependency audit's metadata transfer to npm was explicitly approved for this project. No deployment spend has occurred.
-
-## Checkpoint
-
-The published product commit is `f61525b873a4009e494a19a3bd85e326ab411cf1`. Keep future work recoverable in Git and update this file, `PROJECT_STATE.md`, and evidence after each material milestone.
+These results prove only the scope stated in their evidence files. They are not an independent audit, production wallet integration, a deployed Guard, public registration persistence, mainnet transaction, qualifying adoption or competition submission.

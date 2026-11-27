@@ -1,13 +1,18 @@
-MANDAVEX Operation Titanium static analysis
-Run date: 2026-11-26 (Africa/Algiers)
-Scope: contracts/src/MandavexGuard.sol only
+MANDAVEX static-analysis evidence
+Run date: 2026-11-27 (Africa/Algiers)
+Scope: contracts/src/MandavexGuard.sol
 Tool: Slither 0.11.6, 102 detectors
-Command: .venv-audit/Scripts/slither.exe contracts/src/MandavexGuard.sol --solc .venv-audit/Scripts/solc.exe
-Result: The initial run found four observations, including execute complexity 12. The execution checks were split into internal validation steps and Slither was rerun. The latest run reports three observations; complexity 12 is no longer reported. The command still returned exit code 1 and the bundled solc wrapper printed "Failed to find real location of ... python.exe" while Slither continued and reported analysis output. Treat this as partial static evidence, not a clean toolchain verification.
+Compiler: native solc 0.8.39, optimizer 200, Paris EVM
+Command: python -m slither contracts/src/MandavexGuard.sol --solc <native-solc-0.8.39> --compile-force-framework solc
 
-Observations:
-1. Timestamp comparisons in execute() for validAfter and expiry. These are required time bounds; block timestamps have normal validator tolerance.
-2. Inline assembly in _recover() to read ECDSA signature components.
-3. Low-level staticcall in _hasAgentId() to query the external Agent ID registry; failures and malformed responses revert closed.
+The previous Windows virtual-environment launcher referred to a stale Python runtime and printed a real-location error. This run bypassed the launcher and pointed Slither directly to the installed native solc binary. Slither analyzed two contracts and 102 detectors; it returned one detector observation and exit code 1 (a finding is reported, not a clean/no-findings exit).
 
-No independent audit is implied. The three remaining observations are known protocol mechanisms; the compiler-wrapper issue remains a toolchain limitation. The dependency report and runtime tests do not prove contract security.
+Remaining observation:
+- Timestamp comparisons in `_checkWindow`: `validAfter` and exclusive `expiry` depend on `block.timestamp`. Time-bounded authorization requires this chain clock. The Guard now limits signed windows to at most 24 hours and rejects execution at `timestamp >= expiry`. Validator timestamp tolerance remains a protocol assumption; no audit is implied.
+
+Resolved observations:
+- Inline signature assembly was replaced with bounds-checked calldata slices; the independent signature-length and low-s checks remain. Slither no longer reports assembly.
+- The external registry read now uses a typed `IAgentIdRegistry.balanceOf` call with `try/catch`; all failures fail closed. Slither no longer reports a manually initiated low-level call.
+- Previous complexity observation was removed by decomposing the validation boundary into small internal checks.
+
+This is static analysis only. It does not prove correctness, safety, deployment readiness or absence of vulnerabilities. The contract requires independent security review before any deployment.

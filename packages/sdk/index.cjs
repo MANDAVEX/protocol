@@ -60,4 +60,32 @@ function verifyReceipt(receipt, expected = {}, guardAddress) {
   return { verified: true, transactionHash: receipt.hash, blockNumber: receipt.blockNumber, mandateId: event.args.mandateId, issuer: event.args.issuer, executor: event.args.executor, counterAfter: event.args.counterAfter };
 }
 
-module.exports = { AGENT_ID_BSC, ACTION_INCREMENT, ACTION_TASK_SUBMIT, ACTION_TASK_ACCEPT, encodeTaskPayload, typedMandate, encodeExecute, encodeRevoke, verifyReceipt };
+async function verifyOnchainReceipt(provider, transactionHash, { chainId = 56, guardAddress, expected = {} } = {}) {
+  if (!provider || !/^0x[0-9a-fA-F]{64}$/.test(transactionHash || '') || !/^0x[0-9a-fA-F]{40}$/.test(guardAddress || '')) {
+    return { verified: false, reason: 'invalid_verification_input' };
+  }
+  try {
+    const network = await provider.getNetwork();
+    if (network.chainId !== BigInt(chainId)) return { verified: false, reason: 'wrong_chain', actualChainId: network.chainId.toString() };
+    const [receipt, transaction] = await Promise.all([
+      provider.getTransactionReceipt(transactionHash),
+      provider.getTransaction(transactionHash),
+    ]);
+    if (!receipt || !transaction) return { verified: false, reason: 'transaction_or_receipt_unavailable' };
+    if (transaction.to?.toLowerCase() !== guardAddress.toLowerCase() || receipt.to?.toLowerCase() !== guardAddress.toLowerCase()) {
+      return { verified: false, reason: 'wrong_guard_address' };
+    }
+    const block = await provider.getBlock(receipt.blockNumber);
+    if (!block || block.hash?.toLowerCase() !== receipt.blockHash?.toLowerCase() || transaction.blockHash?.toLowerCase() !== receipt.blockHash?.toLowerCase()) {
+      return { verified: false, reason: 'noncanonical_or_unavailable_block' };
+    }
+    const result = verifyReceipt(receipt, expected, guardAddress);
+    return result.verified
+      ? { ...result, chainId: Number(network.chainId), blockHash: block.hash }
+      : result;
+  } catch (error) {
+    return { verified: false, reason: 'rpc_error', error: error.shortMessage || error.message || 'Unknown RPC error' };
+  }
+}
+
+module.exports = { AGENT_ID_BSC, ACTION_INCREMENT, ACTION_TASK_SUBMIT, ACTION_TASK_ACCEPT, encodeTaskPayload, typedMandate, encodeExecute, encodeRevoke, verifyReceipt, verifyOnchainReceipt };

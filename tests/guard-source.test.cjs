@@ -14,8 +14,8 @@ test('ABI exposes the intended execution and revocation surface', () => {
 });
 
 test('source uses execution-time fail-closed identity reads and a narrow deterministic action', () => {
-  assert.match(source, /agentId\.staticcall/);
-  assert.match(source, /if \(!ok \|\| result\.length < 32\) revert InvalidIdentity\(\)/);
+  assert.match(source, /try IAgentIdRegistry\(agentId\)\.balanceOf\(account\)/);
+  assert.match(source, /catch \{\s*return false;/);
   assert.match(source, /_supportedAction\(m\.action\)/);
   assert.match(source, /action == keccak256\("MANDAVEX_DEMO_INCREMENT_V1"\).*TASK_SUBMIT_ACTION.*TASK_ACCEPT_ACTION/s);
   assert.match(source, /task\.contributor == m\.executor \|\| task\.artifactHash != artifactHash/);
@@ -26,7 +26,8 @@ test('source uses execution-time fail-closed identity reads and a narrow determi
 test('source includes chain and contract domain binding, expiry, revocation and bounded uses', () => {
   assert.match(source, /block\.chainid != deploymentChainId/);
   assert.match(source, /address verifyingContract/);
-  assert.match(source, /block\.timestamp > m\.expiry/);
+  assert.match(source, /block\.timestamp >= m\.expiry/);
+  assert.match(source, /MAX_MANDATE_LIFETIME = 1 days/);
   assert.match(source, /if \(revoked\[id\]\) revert Revoked\(\)/);
   assert.match(source, /if \(nextUse > m\.maxUses\) revert UseLimit\(\)/);
   assert.match(source, /reserved != bytes32\(0\) && reserved != id/);
