@@ -49,6 +49,6 @@ No production contract transaction or deployment result is claimed. The public w
 - Solidity compile: PASS, solc 0.8.39, optimizer 200, Paris EVM, 5,786-byte creation code.
 - Browser bundle build: PASS, 767 KiB worker; adoption panel correctly says `BLOCKED · NOT RUN`.
 - Playwright: PASS at 1440×900 and 390×844; valid local execution, task acceptance, three local receipts, no horizontal overflow, no hero/footer overlap and zero page errors.
-- Public Pages Playwright check: PASS on the application served from `724b59f`; both public and local desktop/mobile screenshots are in `evidence/screenshots/`.
+- Public Pages Playwright check: PASS on the application served from `bc73ae6`; both public and local desktop/mobile screenshots are in `evidence/screenshots/`.
 - Read-only deployment estimate refreshed at BSC block `135956825`: 1,268,421 gas at sampled 0.05 gwei; 0.00006342105 BNB execution estimate; 0.00007610525 BNB reserve with 20% gas headroom. No transaction was sent.
-- Commits `6261399` and `724b59f` were pushed to `main`; CI and Pages succeeded for `724b59f`, and public build metadata matches. No mainnet transaction or expenditure occurred. The follow-up public-smoke harness/evidence update is not yet committed; the full test suite and both browser modes pass with it.
+- Commits `6261399`, `724b59f` and `bc73ae6` were pushed to `main`; CI and Pages succeeded for `bc73ae6`, and public build metadata matches. No mainnet transaction or expenditure occurred.
