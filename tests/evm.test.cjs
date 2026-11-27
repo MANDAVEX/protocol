@@ -4,7 +4,7 @@ const { spawn } = require('node:child_process');
 const path = require('node:path');
 const { JsonRpcProvider, ContractFactory, Signature, AbiCoder, concat, hexlify, keccak256, toBeHex, toUtf8Bytes } = require('ethers');
 const { contract, mock } = require('../scripts/compile-contract.cjs');
-const { verifyReceipt, verifyOnchainReceipt } = require('../packages/sdk/index.cjs');
+const { verifyReceipt, verifyTaskReceipt, verifyOnchainReceipt } = require('../packages/sdk/index.cjs');
 const { verifyInteraction } = require('../scripts/index-activity.cjs');
 
 const port = 18545;
@@ -127,6 +127,14 @@ test('permission-bound task handoff stores submission and accepts the exact arti
   const submit = await signedMandate(ctx, { action: TASK_SUBMIT, payloadHash: keccak256(taskPayload) });
   const submittedReceipt = await (await ctx.guard.connect(ctx.executor).execute(submit.mandate, taskPayload, submit.signature)).wait();
   const submitted = await ctx.guard.tasks(taskId);
+  const guardAddress = await ctx.guard.getAddress();
+  const submissionProof = verifyTaskReceipt(submittedReceipt, {
+    taskId, artifactHash, status: 'Submitted', owner: submit.mandate.issuer,
+    contributor: submit.mandate.executor, reviewer: '0x0000000000000000000000000000000000000000',
+  }, guardAddress);
+  assert.equal(submissionProof.verified, true);
+  assert.equal(submissionProof.task.status, 'Submitted');
+  assert.equal(verifyTaskReceipt(submittedReceipt, { taskId, artifactHash: keccak256(toUtf8Bytes('wrong')), status: 'Submitted' }, guardAddress).reason, 'task_artifactHash_mismatch');
   assert.equal(submitted.status, 1n);
   assert.equal(submitted.owner, submit.mandate.issuer);
   assert.equal(submitted.contributor, submit.mandate.executor);
@@ -155,11 +163,18 @@ test('permission-bound task handoff stores submission and accepts the exact arti
   const reviewSignature = await ctx.issuer.signTypedData(domain, types, reviewMandate);
   const acceptedReceipt = await (await ctx.guard.connect(ctx.outsider).execute(reviewMandate, taskPayload, reviewSignature)).wait();
   const accepted = await ctx.guard.tasks(taskId);
+  const acceptanceProof = verifyTaskReceipt(acceptedReceipt, {
+    taskId, artifactHash, status: 'Accepted', owner: reviewMandate.issuer,
+    contributor: submit.mandate.executor, reviewer: reviewMandate.executor,
+  }, guardAddress);
+  assert.equal(acceptanceProof.verified, true);
+  assert.equal(acceptanceProof.task.status, 'Accepted');
   assert.equal(accepted.status, 2n);
   assert.equal(accepted.reviewer, reviewMandate.executor);
   assert.equal(accepted.artifactHash, artifactHash);
   assert.ok(acceptedReceipt.logs.some((log) => { try { return ctx.guard.interface.parseLog(log)?.args.status === 2n; } catch { return false; } }));
   assert.equal((await ctx.guard.tasks(taskId)).artifactHash, artifactHash);
+  console.log(JSON.stringify({ evidenceStatus: 'LOCAL FIXTURE GAS MEASUREMENT', network: 'Hardhat EVM 31337', note: 'MockAgentId registry and local block gas price; not a BNB Chain fee quote', taskSubmitGasUsed: submittedReceipt.gasUsed.toString(), taskAcceptGasUsed: acceptedReceipt.gasUsed.toString() }));
 });
 
 test('unknown Agent ID executor fails closed and leaves state unchanged', async () => {

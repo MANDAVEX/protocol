@@ -18,6 +18,18 @@ The browser Arena uses only local mock identities and ephemeral keys. Running it
 6. Verify the transaction receipt, Guard event, canonical block, chain ID and Agent ID balances at the receipt block. Share the evidence and limitations with the participant.
 7. Count activity only after an independent rules review confirms it meets current organizer criteria. Never promise eligibility, an award, tokens, financial returns or rewards.
 
+## Official Agentic Wallet procedure (preparation only)
+
+No wallet session has been run. Once a reviewed deployment and authorized holder workflow exist:
+
+1. Holder runs `baw wallet settings --json`; stop unless Developer Mode is on and unexpired.
+2. Prepare the exact `eth_signTypedData_v4` request with the holder's own wallet address as the signing account. Preview using `baw sign-message preview --binanceChainId 56 --signType EIP712 --message '<full eth_signTypedData_v4 request>' --json`.
+3. Inspect `parsedMessage`, risks and authority changes. The holder confirms the exact `requestId` in the Binance app. A pending app confirmation is not completion.
+4. Prepare the exact call using `baw contract-call preview --binanceChainId 56 --from <wallet> --to <verified-guard> --inputData <calldata> --json`. Inspect destination, chain, decoded calldata and fee. The holder confirms that exact request ID in the wallet.
+5. Preserve the wallet's result and transaction hash. Independently verify the canonical receipt against chain 56 and the verified Guard. For tasks, include `--task-id`, `--artifact-hash` and `--task-status submitted|accepted` when running the receipt CLI.
+
+Never bypass the preview/confirmation sequence, inject an unreviewed custom gas setting, or treat locally generated signatures as holder consent. See `../MAINNET_ACTIVATION.md` for the complete ordered gates and recovery path.
+
 ## Invitation draft
 
 > MANDAVEX is building a small, open-source authorization Guard for autonomous agents on BNB Chain. Our preview demonstrates scoped mandates and permission-bound task review using local fixtures; it is not a production deployment. We are preparing a reviewed, no-custody prototype for Agent ID holders to inspect. Participation will be voluntary, use only your own wallet, show exact typed-data and transaction previews, and require your direct confirmation. We will not ask for wallet secrets or promise rewards. If you would like to review the source and security evidence when available, reply to the project team.

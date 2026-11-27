@@ -22,5 +22,11 @@ Updated: 2026-11-27 (Africa/Algiers)
 ## Verified recovery release
 
 - `main` contains the verified recovery, deployment candidate, public browser screenshots and current handoff records. GitHub CI/Pages and public build metadata match the latest pushed release; see `PROJECT_STATE.md` and `VERIFICATION_REPORT.md`.
-- The latest full suite passed 51/51. Local and public Playwright checks passed at desktop and mobile sizes. No mainnet transaction, paid service or spending occurred.
-- The time-sensitive deployment estimate is documented at BSC block `135956825`; recheck before any future human-authorized approval. Current recommended reserve is informational only and does not change the $0 limit.
+- The prior full suite passed 51/51; the Vanguard follow-up full suite passed 52/52, including the read-only BSC fork at `135964180`. Local and public Playwright checks passed at desktop and mobile sizes. No mainnet transaction, paid service or spending occurred.
+- The time-sensitive deployment estimate is documented at BSC block `135964279`; recheck before any future human-authorized approval. Current recommended reserve is informational only and does not change the $0 limit.
+
+## Operation Vanguard follow-up
+
+- **IMPLEMENTED BUT UNVERIFIED:** SDK and CLI now verify task-specific `TaskTransition` receipts alongside authorization events. Focused EVM/SDK/CLI qualification passed 20/20. Production receipt verification remains blocked because the manifest has no deployed Guard.
+- **BLOCKED:** Independent security review, authorized funding, genuine wallet signing, deployment/source verification, production interface activation, live task workflow, 30 distinct qualifying interactions and competition submission remain incomplete.
+- **VERIFIED, limited scope:** exact Guard candidate hashes reproduce; read-only deployment estimate refreshed at BSC block `135964279`; task gas numbers are local mock-registry measurements only. See `evidence/operation-vanguard-qualification.md` and `docs/DEPLOYMENT_COSTS.md`.

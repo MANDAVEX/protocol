@@ -1,12 +1,14 @@
 # Operation Sovereign Acceptance Gates
 
+Operation Vanguard follow-up (2026-11-27): focused task-aware receipt verification added and its EVM/SDK/CLI regression suite passed 20/20. Exact activation order, evidence limitations and latest cost sample are recorded in `MAINNET_ACTIVATION.md` and `evidence/operation-vanguard-qualification.md`. This does not change production gates: no independent audit, deployed Guard, real wallet execution, qualifying interactions or competition submission exists; spend remains $0.00.
+
 Updated: 2026-11-27. Statuses distinguish published evidence from the current local follow-up workspace.
 
 | Gate | Status | Verification / evidence | Limitation and next action | Human action |
 |---|---|---|---|---|
 | S01 Existing workspace recovered | VERIFIED | Git workspace inspected; recovery release `e461415` is published on `main` | Production Guard remains undeployed | None |
 | S02 Complete build reproducible | VERIFIED | Local solc compile and browser build pass; CI and Pages succeeded for `e461415` | Tests do not establish a security audit | None |
-| S03 All current tests executed | VERIFIED | `npm test`: 51 passed, 0 failed, including read-only BSC fork at `135957477`; `npm run test:browser` and `npm run test:browser:public` passed both viewports; see `evidence/desktop-mobile-smoke.md` | Tests are not a security audit | None |
+| S03 All current tests executed | VERIFIED | Prior browser suites passed both viewports; current `npm test`: 52 passed, 0 failed, including read-only BSC fork at `135964180`; `npm run compile:contracts` and `npm run build:web` passed | Tests are not a security audit | None |
 | S04 Functional browser EVM Arena | VERIFIED | Public browser run passed valid mandate and payload-tampering rejection; SDK/worker test suite passed | Demo fixtures only; no public chain activity | None |
 | S05 Public runtime demonstration | VERIFIED | Public Pages build at `https://mandavex.github.io/protocol/`; matching metadata and assets returned HTTP 200 | Runtime is a local EVM demo, not the deployed protocol | None |
 | S06 Complete signed local authorization lifecycle | VERIFIED | Local EVM test covers signature, execution, event, nonce/use, revocation and expiry | Controlled fixtures only | None |
@@ -19,7 +21,7 @@ Updated: 2026-11-27. Statuses distinguish published evidence from the current lo
 | S13 Security-critical invariants | PARTIALLY IMPLEMENTED | 50 tests include registry-failure fail-closed, 128 payload mutations, 64 malformed signatures, replay, scope, expiry and use invariants; Slither leaves one timestamp observation | No independent audit or formal verification | Independent security reviewer required before production deployment |
 | S14 Public deployment reflects latest reviewed commit | VERIFIED | CI/Pages and public metadata match `e4614154426271cd6eeae89d7529ed208560bee2`; local and public smoke cover desktop/mobile | No production Guard is deployed | None |
 | S15 Reproducible mainnet release candidate | PARTIALLY IMPLEMENTED | Immutable Guard, compiler settings, manifest-gated CLI, deployment script and unsigned preparation exist | Independent review, genuine holder signature, live wallet validation and source freeze remain | Human approval before any wallet transaction |
-| S16 Exact deployment funding requirement | PARTIALLY IMPLEMENTED | Read-only estimate at block `135956825`; deployment `0.00006342105 BNB`, recommended reserve `0.00007610525 BNB` with 20% gas headroom | Time-sensitive RPC estimate, not a guaranteed fee; no spend authorized | Recheck only after authorization changes |
+| S16 Exact deployment funding requirement | PARTIALLY IMPLEMENTED | Read-only estimate at block `135964279`; deployment `0.00006342105 BNB`, recommended reserve `0.00007610525 BNB` with 20% gas headroom | Time-sensitive RPC estimate, not a guaranteed fee; no spend authorized | Recheck only after authorization changes |
 | S17 Actual mainnet deployment | BLOCKED | No transaction or contract address | Requires security review, a deployment wallet and gas | Owner must authorize and confirm the exact wallet transaction |
 | S18 Genuine production interaction | NOT IMPLEMENTED | No production transaction evidence | Requires deployed and verified Guard | Agent ID holder initiates from own wallet |
 | S19 At least 30 qualifying participants | NOT IMPLEMENTED | No qualifying contract interactions recorded | Requires 30 distinct genuine Agent ID holders during submission window | Genuine holders must interact; no artificial activity |

@@ -24,12 +24,20 @@
   "deploymentInitCodeSha256": "4121d2311733f6470ee3fdb78654352f44a6c3d1a0dcbd42fc7b2fb9ce071b0b",
   "deploymentEstimate": {
     "evidenceStatus": "VERIFIED",
-    "blockNumber": 135956825,
+    "blockNumber": 135964279,
     "gasEstimate": "1268421",
     "gasLimitWith20PercentHeadroom": "1522105",
     "sampledFeePerGasWei": "50000000",
     "estimatedExecutionFeeBNB": "0.00006342105",
     "recommendedReserveBNB": "0.00007610525"
+  },
+  "localTaskGasMeasurements": {
+    "evidenceStatus": "VERIFIED",
+    "network": "Hardhat EVM 31337",
+    "registry": "MockAgentId",
+    "taskSubmitGasUsed": "217048",
+    "taskAcceptGasUsed": "142300",
+    "limitation": "Local fixture measurements only; not BNB Smart Chain transaction estimates"
   },
   "mainnetReadiness": {
     "approvedForMainnet": false,

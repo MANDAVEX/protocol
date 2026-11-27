@@ -2,6 +2,14 @@
 
 Updated: 2026-11-27 (Africa/Algiers)
 
+Operation Vanguard follow-up full suite: 52 passed, 0 failed; latest read-only BSC fork block `135964180`. Contract compile and browser build passed. Read-only deployment estimate refreshed at block `135964279`. See `MAINNET_ACTIVATION.md` for the ordered release gates.
+
+## Operation Vanguard current handoff
+
+Receipt verification now checks the task transition (task ID, status, artifact hash, parties when provided and mandate linkage), not only the authorization event. Focused EVM/SDK/CLI suite passed 20/20. Release candidate integrity and read-only BSC estimate are recorded in `evidence/operation-vanguard-qualification.md`; exact ordered activation gates are in `MAINNET_ACTIVATION.md`; holder instructions and the local-versus-chain cost distinction are in `docs/DEPLOYMENT_COSTS.md`.
+
+Still **BLOCKED**: independent review, explicit funding authorization beyond $0, real wallet verification, deployment, production task interaction, qualifying holders and submission. No activity with cost or holder approval is authorized. Outreach drafts are prepared in `hackathon/COMMUNITY_CAMPAIGN.md` and have not been sent.
+
 ## Current engineering recovery
 
 Commit `e461415` is published on GitHub `main`; CI and Pages succeeded, and public build metadata reports the matching commit. Contract hardening, SDK/CLI receipt verification, local and public Playwright desktop/mobile checks, screenshots, submission materials and a packaged pre-deployment release candidate are available. Latest public Pages smoke passed.

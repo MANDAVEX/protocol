@@ -1,5 +1,15 @@
 # VERIFICATION_REPORT
 
+## Operation Vanguard follow-up — 2026-11-27
+
+- Full suite: PASS (52/52), including read-only BSC fork at block `135964180`; focused EVM/SDK/receipt CLI suite: 20/20.
+- Task receipts now require a matching `TaskTransition` from the specified Guard with matching task ID, status, artifact hash and mandate linkage. SDK tests reject artifact substitution; CLI tests require all three task expectations and remain blocked before RPC while no deployment is recorded.
+- Solidity compile: PASS, solc 0.8.39, creation code 5,786 bytes. Browser build: PASS, worker 767 KiB. Existing local/public desktop/mobile browser evidence remains from prior checkpoint; this follow-up made no frontend changes.
+- Candidate source/bytecode/init-code hashes reproduced against `releases/mandavex-guard-rc1/release.json`; no Guard source change was made.
+- Read-only deployment estimate refreshed at BSC block `135964279`; no transaction sent. Local task gas measurements use a mock registry and must not be represented as BSC execution costs.
+- See `evidence/operation-vanguard-qualification.md`, `MAINNET_ACTIVATION.md`, and `docs/DEPLOYMENT_COSTS.md` for limits, exact gates and cost separation.
+- No independent audit, genuine holder signature, deployment, qualifying interaction or competition submission is claimed. Spend authorization remains $0.
+
 Updated 2026-11-26. Current public checkpoint: `467cbbfb15c87c4fe31bd2367c1f28c4a12c203b`. This report distinguishes local demo evidence from production protocol evidence.
 
 ## Operation Titanium local verification

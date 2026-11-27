@@ -1,5 +1,9 @@
 # DECISIONS
 
+## 2026-11-27 — task receipts must prove the task transition
+
+The SDK and CLI must verify the Guard's `TaskTransition` alongside `ActionAuthorized` whenever a task receipt is claimed. The verifier binds the expected task ID, status, artifact hash and mandate ID; expected parties can also be checked. Rationale: an authorization event alone does not prove the exact task artifact was submitted or accepted. Verification remains fail-closed and manifest-gated until a production Guard exists. This is an off-contract change and does not alter the frozen Guard candidate bytecode.
+
 ## 2026-11-25 — Start from a minimal immutable guard
 The workspace had no prior source or Git history. Start with one immutable execution-boundary contract rather than a multi-contract framework. This limits privilege surface and makes the core use case reviewable.
 

@@ -22,6 +22,7 @@ const guardInterface = new Interface([
   'function execute((address issuer,address executor,bytes32 action,bytes32 payloadHash,uint64 validAfter,uint64 expiry,uint256 nonce,uint32 maxUses) mandate,bytes payload,bytes signature) returns (bytes32)',
   'function revoke((address issuer,address executor,bytes32 action,bytes32 payloadHash,uint64 validAfter,uint64 expiry,uint256 nonce,uint32 maxUses) mandate)',
   'event ActionAuthorized(bytes32 indexed mandateId,address indexed issuer,address indexed executor,bytes32 action,bytes32 payloadHash,uint32 useNumber,uint256 counterAfter)',
+  'event TaskTransition(bytes32 indexed taskId,uint8 status,address indexed owner,address contributor,address reviewer,bytes32 artifactHash,bytes32 indexed mandateId)',
 ]);
 
 function typedMandate(mandate, chainId, verifyingContract) {
@@ -60,7 +61,51 @@ function verifyReceipt(receipt, expected = {}, guardAddress) {
   return { verified: true, transactionHash: receipt.hash, blockNumber: receipt.blockNumber, mandateId: event.args.mandateId, issuer: event.args.issuer, executor: event.args.executor, counterAfter: event.args.counterAfter };
 }
 
-async function verifyOnchainReceipt(provider, transactionHash, { chainId = 56, guardAddress, expected = {} } = {}) {
+function verifyTaskReceipt(receipt, expected = {}, guardAddress) {
+  const statusNames = { 1: 'Submitted', 2: 'Accepted' };
+  const wantedStatus = expected.status === 'Submitted' ? 1 : expected.status === 'Accepted' ? 2 : Number(expected.status);
+  if (!/^0x[0-9a-fA-F]{40}$/.test(guardAddress || '') ||
+      !/^0x[0-9a-fA-F]{64}$/.test(expected.taskId || '') || /^0x0{64}$/i.test(expected.taskId || '') ||
+      !/^0x[0-9a-fA-F]{64}$/.test(expected.artifactHash || '') || /^0x0{64}$/i.test(expected.artifactHash || '') ||
+      !statusNames[wantedStatus]) {
+    return { verified: false, reason: 'invalid_task_verification_input' };
+  }
+  const action = wantedStatus === 1 ? ACTION_TASK_SUBMIT : ACTION_TASK_ACCEPT;
+  const authorization = verifyReceipt(receipt, { ...expected, action }, guardAddress);
+  if (!authorization.verified) return authorization;
+  let transition = null;
+  for (const log of receipt.logs || []) {
+    if (log.address?.toLowerCase() !== guardAddress.toLowerCase()) continue;
+    try {
+      const parsed = guardInterface.parseLog(log);
+      if (parsed?.name === 'TaskTransition' && parsed.args.taskId.toLowerCase() === expected.taskId.toLowerCase()) {
+        transition = parsed;
+        break;
+      }
+    } catch { /* unrelated log */ }
+  }
+  if (!transition) return { verified: false, reason: 'task_transition_missing' };
+  const values = {
+    status: Number(transition.args.status),
+    owner: transition.args.owner,
+    contributor: transition.args.contributor,
+    reviewer: transition.args.reviewer,
+    artifactHash: transition.args.artifactHash,
+    mandateId: transition.args.mandateId,
+  };
+  if (values.status !== wantedStatus) return { verified: false, reason: 'task_status_mismatch' };
+  for (const key of ['owner', 'contributor', 'reviewer', 'artifactHash']) {
+    if (expected[key] !== undefined && String(values[key]).toLowerCase() !== String(expected[key]).toLowerCase()) {
+      return { verified: false, reason: `task_${key}_mismatch` };
+    }
+  }
+  if (values.mandateId.toLowerCase() !== authorization.mandateId.toLowerCase()) {
+    return { verified: false, reason: 'task_mandate_mismatch' };
+  }
+  return { ...authorization, task: { taskId: expected.taskId, ...values, status: statusNames[values.status] } };
+}
+
+async function verifyOnchainReceipt(provider, transactionHash, { chainId = 56, guardAddress, expected = {}, expectedTask } = {}) {
   if (!provider || !/^0x[0-9a-fA-F]{64}$/.test(transactionHash || '') || !/^0x[0-9a-fA-F]{40}$/.test(guardAddress || '')) {
     return { verified: false, reason: 'invalid_verification_input' };
   }
@@ -79,7 +124,9 @@ async function verifyOnchainReceipt(provider, transactionHash, { chainId = 56, g
     if (!block || block.hash?.toLowerCase() !== receipt.blockHash?.toLowerCase() || transaction.blockHash?.toLowerCase() !== receipt.blockHash?.toLowerCase()) {
       return { verified: false, reason: 'noncanonical_or_unavailable_block' };
     }
-    const result = verifyReceipt(receipt, expected, guardAddress);
+    const result = expectedTask
+      ? verifyTaskReceipt(receipt, { ...expected, ...expectedTask }, guardAddress)
+      : verifyReceipt(receipt, expected, guardAddress);
     return result.verified
       ? { ...result, chainId: Number(network.chainId), blockHash: block.hash }
       : result;
@@ -88,4 +135,4 @@ async function verifyOnchainReceipt(provider, transactionHash, { chainId = 56, g
   }
 }
 
-module.exports = { AGENT_ID_BSC, ACTION_INCREMENT, ACTION_TASK_SUBMIT, ACTION_TASK_ACCEPT, encodeTaskPayload, typedMandate, encodeExecute, encodeRevoke, verifyReceipt, verifyOnchainReceipt };
+module.exports = { AGENT_ID_BSC, ACTION_INCREMENT, ACTION_TASK_SUBMIT, ACTION_TASK_ACCEPT, encodeTaskPayload, typedMandate, encodeExecute, encodeRevoke, verifyReceipt, verifyTaskReceipt, verifyOnchainReceipt };

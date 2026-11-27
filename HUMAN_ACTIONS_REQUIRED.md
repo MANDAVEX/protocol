@@ -17,6 +17,10 @@ The following actions require human authority and cannot be replaced with simula
 
 The current technical package is preparation only. It does not authorize any transaction or wallet prompt. Agentic Wallet connection, live signing, mainnet deployment, qualifying activity and competition submission remain unverified or unimplemented as recorded in `ACCEPTANCE_GATES.md`.
 
+## Operation Vanguard qualification addendum (2026-11-27)
+
+**BLOCKED:** No independent review, budget authorization, deployment, live holder wallet, qualifying interactions, or competition submission. The exact execution order and recovery steps are in `MAINNET_ACTIVATION.md`. A complete task workflow needs two owner-authorized EIP-712 signatures and two transactions; local mock-registry gas observations are not production estimates. Task-aware receipt verification is implemented and locally tested, but cannot verify production receipts until a reviewed Guard is deployed and recorded in the manifest. Do not initiate any step that incurs cost or requests a holder signature until the stated prerequisites and authority are satisfied.
+
 ## Out of scope for this release
 
 Cloudflare authentication and token development are postponed by the takeover brief. Genesis remains inactive until its separately authorized infrastructure setup and privacy review are complete.
