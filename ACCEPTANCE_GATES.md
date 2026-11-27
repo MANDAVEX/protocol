@@ -6,7 +6,7 @@ Updated: 2026-11-27. Statuses distinguish published evidence from the current lo
 |---|---|---|---|---|
 | S01 Existing workspace recovered | VERIFIED | Git workspace inspected; `main` published through `75e0f35`; later engineering changes are in the current workspace | Current recovery changes still require publication | None |
 | S02 Complete build reproducible | VERIFIED | Local solc compile and browser build pass; CI and Pages succeeded for public `75e0f35` | Latest local follow-up changes await publication | None |
-| S03 All current tests executed | VERIFIED | `npm test`: 51 passed, 0 failed, including read-only BSC fork at `135956127`; `npm run test:browser` passed both viewports; see `evidence/desktop-mobile-smoke.md` | Tests are not a security audit | None |
+| S03 All current tests executed | VERIFIED | `npm test`: 51 passed, 0 failed, including read-only BSC fork at `135957477`; local and public `npm run test:browser` passed both viewports; see `evidence/desktop-mobile-smoke.md` | Tests are not a security audit | None |
 | S04 Functional browser EVM Arena | VERIFIED | Public browser run passed valid mandate and payload-tampering rejection; SDK/worker test suite passed | Demo fixtures only; no public chain activity | None |
 | S05 Public runtime demonstration | VERIFIED | Public Pages build at `https://mandavex.github.io/protocol/`; matching metadata and assets returned HTTP 200 | Runtime is a local EVM demo, not the deployed protocol | None |
 | S06 Complete signed local authorization lifecycle | VERIFIED | Local EVM test covers signature, execution, event, nonce/use, revocation and expiry | Controlled fixtures only | None |

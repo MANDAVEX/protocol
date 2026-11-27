@@ -5,11 +5,14 @@ const { chromium } = require('playwright');
 
 const root = path.resolve(__dirname, '..');
 const screenshotDir = path.join(root, 'evidence/screenshots');
-const server = spawn(process.execPath, [path.join(root, 'scripts/dev-server.cjs')], {
+const publicMode = process.argv.includes('--public');
+const previewUrl = publicMode ? 'https://mandavex.github.io/protocol/' : 'http://127.0.0.1:4173/';
+const server = publicMode ? null : spawn(process.execPath, [path.join(root, 'scripts/dev-server.cjs')], {
   cwd: root, stdio: 'ignore', windowsHide: true,
 });
 
 async function waitForServer() {
+  if (publicMode) return;
   for (let attempt = 0; attempt < 100; attempt++) {
     if (server.exitCode !== null) throw new Error(`Preview server exited with ${server.exitCode}`);
     try {
@@ -34,7 +37,7 @@ async function run() {
       const page = await browser.newPage({ viewport: { width: viewport.width, height: viewport.height } });
       const pageErrors = [];
       page.on('pageerror', (error) => pageErrors.push(error.message));
-      await page.goto('http://127.0.0.1:4173/', { waitUntil: 'domcontentloaded' });
+      await page.goto(previewUrl, { waitUntil: 'domcontentloaded' });
       await page.getByRole('button', { name: 'Valid signed action' }).waitFor({ timeout: 30000 });
       const mode = await page.locator('#arena-mode').innerText();
       if (!mode.includes('browser-side EVM')) throw new Error(`${viewport.name}: ${mode}`);
@@ -77,20 +80,20 @@ async function run() {
         pageErrors,
       });
       await page.evaluate(() => window.scrollTo(0, 0));
-      const screenshot = path.join(screenshotDir, `local-demo-${viewport.name}.png`);
+      const screenshot = path.join(screenshotDir, `${publicMode ? 'public-release' : 'local-demo'}-${viewport.name}.png`);
       await page.screenshot({ path: screenshot, fullPage: true });
       results.at(-1).screenshot = path.relative(root, screenshot).replaceAll(path.sep, '/');
       await page.close();
     }
   } finally {
     await browser.close();
-    server.kill();
+    server?.kill();
   }
   process.stdout.write(`${JSON.stringify({ status: 'VERIFIED', evidenceStatus: 'LOCAL BROWSER SMOKE · DEMO FIXTURES ONLY', results }, null, 2)}\n`);
 }
 
 run().catch((error) => {
-  server.kill();
+  server?.kill();
   console.error(error);
   process.exitCode = 1;
 });

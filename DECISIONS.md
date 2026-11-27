@@ -70,5 +70,5 @@ The user approved publishing the static preview and its Pages workflow permissio
 
 ## 2026-11-27 — Keep browser end-to-end checks reproducible
 
-- Pin Playwright as a development dependency and add `npm run test:browser` for desktop/mobile layout, browser EVM actions, task acceptance and receipt explorer assertions. The test creates only local fixture evidence and sends no BNB RPC request.
+- Pin Playwright as a development dependency and add `npm run test:browser` for local desktop/mobile layout, browser EVM actions, task acceptance and receipt explorer assertions. Add `npm run test:browser:public` for the same read-only smoke against published Pages. Both create only local fixture evidence and send no BNB RPC transaction.
 - Mobile smoke revealed the hero footer overlapping actions. At the mobile breakpoint the footer now flows after the buttons, and the Playwright test guards both overlap and horizontal overflow.

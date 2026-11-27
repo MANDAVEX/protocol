@@ -25,4 +25,9 @@ The first mobile visual inspection found the hero footer overlapping the action 
 
 The pages show the local browser Arena's accepted task receipts and clearly blocked adoption status. They are local demo fixtures, not production activity. Regression command: `npm run test:browser` (after `npx playwright install chromium`).
 
-The dashboard deployment itself is separately covered by the successful GitHub CI and Pages workflows for commit `75e0f355cbca95ae59761e57fce776a5fd73e11c`. Changes made after that commit, including the responsive fix and current contract/SDK work, are local until reviewed and published.
+The same scenarios ran against the public Pages release after CI and Pages completed successfully for commit `724b59f2a58232289d3d7f497dacab96abc88333`. `npm run test:browser:public` passed at both viewports and saved:
+
+- [`screenshots/public-release-desktop.png`](screenshots/public-release-desktop.png)
+- [`screenshots/public-release-mobile.png`](screenshots/public-release-mobile.png)
+
+The public screenshots show browser-side EVM fixtures, not production wallet execution or mainnet activity. The adoption panel remains blocked and displays unknown counts because no Guard is deployed.

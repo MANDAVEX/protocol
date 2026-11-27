@@ -14,6 +14,7 @@
     "arena:local": "node scripts/arena-server.cjs",
     "build:web": "node scripts/build-browser-arena.cjs",
     "test:browser": "node scripts/browser-smoke.cjs",
+    "test:browser:public": "node scripts/browser-smoke.cjs --public",
     "mandate:prepare": "node scripts/mandate-cli.cjs prepare",
     "verify:receipt": "node scripts/verify-receipt.cjs",
     "index:activity": "node scripts/index-activity.cjs",

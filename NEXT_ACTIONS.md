@@ -4,9 +4,9 @@ Updated: 2026-11-27 (Africa/Algiers)
 
 ## Current engineering recovery
 
-The reviewed adoption dashboard commit `75e0f35` is published on GitHub `main`. CI and Pages succeeded and public build metadata reports that commit. Follow-up contract hardening, SDK/CLI receipt verification, the Playwright desktop/mobile check and competition materials are present locally and require final diff review, commit and publication.
+Commit `724b59f` is published on GitHub `main`; CI and Pages succeeded, and public build metadata reports the matching commit. Contract hardening, SDK/CLI receipt verification, local and public Playwright desktop/mobile checks, screenshots, submission materials and a packaged pre-deployment release candidate are available. Latest public Pages smoke passed. The most recent public-smoke harness/evidence updates need a final test, commit and publication.
 
-Immediate interrupted task is resolved and verified: nested Agentic Wallet typed-data JSON converts BigInts to exact decimal strings; regression covers uint64 timestamps and a >2^200 uint256 nonce. Full suite passes 51/51; BSC fork was read-only at block `135956127`. Contract compile, web build and Playwright desktop/mobile smoke pass. Before publication, review all inherited local diffs, check for secrets, inspect actual public app state and confirm GitHub CI/Pages for the validated commit. No local modifications have been committed or pushed.
+Immediate interrupted task is resolved and verified: nested Agentic Wallet typed-data JSON converts BigInts to exact decimal strings; regression covers uint64 timestamps and a >2^200 uint256 nonce. Full suite passes 51/51; BSC fork was read-only at block `135957477`. Contract compile, web build and Playwright local/public desktop/mobile smoke pass. The validated recovery and candidate were pushed as `724b59f`; CI, Pages and public build metadata all match. Latest public-smoke harness, screenshots and evidence update need a final commit/push.
 
 ## Release readiness
 

@@ -45,8 +45,10 @@ No production contract transaction or deployment result is claimed. The public w
 ## Latest local recovery verification — 2026-11-27
 
 - Nested Agentic Wallet serialization regression, including a >2^200 nonce and exact expiry/timestamp checks: PASS (focused CLI/SDK tests, 9/9).
-- Full suite: PASS (51/51); BSC fork ran at block `135956127`. The fork-only observed holder passes identity checks; execution stops at invalid signature. No holder signature or mainnet transaction occurred.
+- Full suite: PASS (51/51); latest BSC fork ran at block `135957477`. The fork-only observed holder passes identity checks; execution stops at invalid signature. No holder signature or mainnet transaction occurred.
 - Solidity compile: PASS, solc 0.8.39, optimizer 200, Paris EVM, 5,786-byte creation code.
 - Browser bundle build: PASS, 767 KiB worker; adoption panel correctly says `BLOCKED · NOT RUN`.
 - Playwright: PASS at 1440×900 and 390×844; valid local execution, task acceptance, three local receipts, no horizontal overflow, no hero/footer overlap and zero page errors.
-- No commit, push, Pages deployment, mainnet transaction, or expenditure was made in this recovery turn. Latest public release remains `75e0f35`; local modifications are uncommitted.
+- Public Pages Playwright check: PASS on the application served from `724b59f`; both public and local desktop/mobile screenshots are in `evidence/screenshots/`.
+- Read-only deployment estimate refreshed at BSC block `135956825`: 1,268,421 gas at sampled 0.05 gwei; 0.00006342105 BNB execution estimate; 0.00007610525 BNB reserve with 20% gas headroom. No transaction was sent.
+- Commits `6261399` and `724b59f` were pushed to `main`; CI and Pages succeeded for `724b59f`, and public build metadata matches. No mainnet transaction or expenditure occurred. The follow-up public-smoke harness/evidence update is not yet committed; the full test suite and both browser modes pass with it.
